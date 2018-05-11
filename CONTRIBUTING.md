@@ -11,8 +11,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 
 ### 1. Fork and download android/master repository:
-* Please follow [SETUP.md](https://github.com/nextcloud/android/blob/master/SETUP.md) to setup Nextcloud Android app work environment.
-
+* Please follow [README.md](https://github.com/Manan-YMCA/FirstCut/blob/master/README.md) to setup FirstCut Android app work environment.
 
 ### 2. Create pull request:
 * Commit your changes locally: ```git commit -a```
