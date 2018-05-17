@@ -11,12 +11,12 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 
 ### 1. Fork and download android/master repository:
-* Please follow [README.md](https://github.com/Manan-YMCA/FirstCut/blob/master/README.md) to setup FirstCut Android app work environment.
+* Please follow [README.md](https://github.com/Manan-YMCA/Shine-YMCA/blob/master/README.md) to setup Shine-YMCA Android app work environment.
 
 ### 2. Create pull request:
 * Commit your changes locally: ```git commit -a```
 * Push your changes to your GitHub repo: ```git push```
-* Browse to https://github.com/YOURGITHUBNAME/FirstCut/pulls and issue pull request
+* Browse to https://github.com/YOURGITHUBNAME/Shine-YMCA/pulls and issue pull request
 * Enter description and send pull request.
 
 ### Pull Request Guidelines
