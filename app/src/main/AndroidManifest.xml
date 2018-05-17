@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.manan.dev.firstcut">
+    package="com.manan.dev.shineymca">
 
     <application
         android:allowBackup="true"

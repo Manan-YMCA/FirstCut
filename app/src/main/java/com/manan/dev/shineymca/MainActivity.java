@@ -1,4 +1,4 @@
-package com.manan.dev.firstcut;
+package com.manan.dev.shineymca;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
