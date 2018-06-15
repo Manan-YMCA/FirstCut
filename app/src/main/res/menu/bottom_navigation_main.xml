@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/iconhome"
+        android:title="@string/text_blank"
+         />
+    <item
+        android:id="@+id/action_calender"
+        android:icon="@drawable/iconplanner"
+        android:title="@string/text_blank"
+       />
+    <item
+        android:id="@+id/action_notifications"
+        android:icon="@drawable/iconnotification"
+        android:title="@string/text_blank"
+        />
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/iconusermale"
+        android:title="@string/text_blank"
+        />
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/iconinfo"
+        android:title="@string/text_blank"
+       />
+</menu>
