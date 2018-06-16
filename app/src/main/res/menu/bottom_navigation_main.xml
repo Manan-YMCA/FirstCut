@@ -4,31 +4,31 @@
     <item
         android:id="@+id/action_home"
         android:icon="@drawable/iconhome"
-        android:title="@string/text_blank"
+        android:title="@string/home"
         android:orderInCategory="1"
          />
     <item
         android:id="@+id/action_calender"
         android:icon="@drawable/iconplanner"
-        android:title="@string/text_blank"
         android:orderInCategory="2"
+        android:title="@string/calendar"
        />
     <item
         android:id="@+id/action_notifications"
         android:icon="@drawable/iconnotification"
-        android:title="@string/text_blank"
         android:orderInCategory="3"
+        android:title="@string/notifications"
         />
     <item
         android:id="@+id/action_profile"
         android:icon="@drawable/iconusermale"
-        android:title="@string/text_blank"
         android:orderInCategory="4"
+        android:title="@string/profile"
         />
     <item
         android:id="@+id/action_about"
         android:icon="@drawable/iconinfo"
-        android:title="@string/text_blank"
         android:orderInCategory="5"
+        android:title="@string/about"
        />
 </menu>

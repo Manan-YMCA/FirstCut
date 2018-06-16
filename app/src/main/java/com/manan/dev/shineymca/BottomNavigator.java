@@ -1,12 +1,17 @@
 package com.manan.dev.shineymca;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -28,10 +33,14 @@ public class BottomNavigator extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigator);
+        String title = getResources().getString(R.string.app_name);
+        SpannableString s = new SpannableString(title);
+        s.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(s);
         UserviewPager = (ViewPager) findViewById(R.id.user_view_pager);
         navBar = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
-        navBar.getMenu().getItem(1).setChecked(true);
+        navBar.getMenu().getItem(0).setChecked(true);
       navBar.setOnNavigationItemSelectedListener(
 
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
