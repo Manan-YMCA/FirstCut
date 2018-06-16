@@ -13,15 +13,7 @@ import com.manan.dev.shineymca.R;
  */
 
 public class NotificationFragment extends android.support.v4.app.Fragment{
-    public static NotificationFragment newInstance() {
-      NotificationFragment fragment = new NotificationFragment();
-        return fragment;
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

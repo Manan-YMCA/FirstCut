@@ -4,59 +4,93 @@ import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.manan.dev.shineymca.Fragments.AboutFragment;
 import com.manan.dev.shineymca.Fragments.CalenderFragment;
 import com.manan.dev.shineymca.Fragments.HomeFragment;
 import com.manan.dev.shineymca.Fragments.NotificationFragment;
 import com.manan.dev.shineymca.Fragments.ProfileFragment;
+import com.manan.dev.shineymca.Fragments.UserTabsPagerAdapter;
 
 public class BottomNavigator extends AppCompatActivity {
-
+    BottomNavigationView navBar;
+    ViewPager UserviewPager;
+    private UserTabsPagerAdapter adapter;
+    MenuItem prevItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigator);
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+        UserviewPager = (ViewPager) findViewById(R.id.user_view_pager);
+        navBar = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(
+        navBar.getMenu().getItem(1).setChecked(true);
+      navBar.setOnNavigationItemSelectedListener(
+
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                     android.support.v4.app.Fragment selectedFragment = null;
-                        switch (item.getItemId()) {
-                            //switch to selected fragment
-                            case R.id.action_home:
-                                selectedFragment = HomeFragment.newInstance();
-                                break;
-                            case R.id.action_notifications:
-                                selectedFragment = NotificationFragment.newInstance();
-                                break;
-                            case R.id.action_calender:
-                                selectedFragment = CalenderFragment.newInstance();
-                                break;
-                            case R.id.action_profile:
-                                selectedFragment = ProfileFragment.newInstance();
-                                break;
-                            case R.id.action_about:
-                                selectedFragment = AboutFragment.newInstance();
-                                break;
-                        }
-                       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, selectedFragment);
-                        transaction.commit();
-                        return true;
+                       switch(item.getItemId()){
+                           case R.id.action_home:
+                               UserviewPager.setCurrentItem(0);
+                               break;
+                           case R.id.action_calender:
+                               UserviewPager.setCurrentItem(1);
+                               break;
+                           case R.id.action_notifications:
+                               UserviewPager.setCurrentItem(2);
+                               break;
+                           case R.id.action_profile:
+                               UserviewPager.setCurrentItem(3);
+                               break;
+                           case R.id.action_about:
+                               UserviewPager.setCurrentItem(4);
+                               break;
+
+                       }
+                        return false;
+
                     }
                 });
-        //Manually displaying the home fragment - one time only
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, HomeFragment.newInstance());
-        transaction.commit();
 
+        UserviewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(prevItem!=null)
+                    prevItem.setChecked(false);
+                else
+                    navBar.getMenu().getItem(0).setChecked(false);
+                navBar.getMenu().getItem(position).setChecked(true);
+                prevItem=navBar.getMenu().getItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        setUpViewPager(UserviewPager);
+    }
+    private void setUpViewPager(ViewPager viewPager) {
+        adapter = new UserTabsPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new AboutFragment(), "ABOUT");
+        adapter.addFragment(new CalenderFragment(), "CALENDER");
+        adapter.addFragment(new NotificationFragment(), "NOTIFICATION");
+        adapter.addFragment(new ProfileFragment(), "PROFILE");
+        adapter.addFragment(new AboutFragment(), "ABOUT");
+
+        UserviewPager.setAdapter(adapter);
     }
 }

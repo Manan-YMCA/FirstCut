@@ -13,15 +13,6 @@ import com.manan.dev.shineymca.R;
  */
 
 public class HomeFragment extends android.support.v4.app.Fragment {
-    public static HomeFragment newInstance() {
-        HomeFragment fragment = new HomeFragment();
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

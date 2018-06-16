@@ -13,14 +13,6 @@ import com.manan.dev.shineymca.R;
  */
 
 public class CalenderFragment extends android.support.v4.app.Fragment{
-    public static CalenderFragment newInstance() {
-        CalenderFragment fragment = new CalenderFragment();
-        return fragment;
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
