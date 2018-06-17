@@ -29,6 +29,7 @@ public class BottomNavigator extends AppCompatActivity {
     ViewPager UserviewPager;
     private UserTabsPagerAdapter adapter;
     MenuItem prevItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,7 @@ public class BottomNavigator extends AppCompatActivity {
         String title = getResources().getString(R.string.app_name);
         SpannableString s = new SpannableString(title);
         s.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        getSupportActionBar().setTitle(s);
+//        getSupportActionBar().setTitle(s);
         UserviewPager = (ViewPager) findViewById(R.id.user_view_pager);
         navBar = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
