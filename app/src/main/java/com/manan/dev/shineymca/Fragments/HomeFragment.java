@@ -1,8 +1,6 @@
 package com.manan.dev.shineymca.Fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,10 +11,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
-import com.manan.dev.shineymca.Club;
+import com.manan.dev.shineymca.Models.Club;
 import com.manan.dev.shineymca.R;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by nisha on 6/15/2018.
@@ -51,8 +47,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             protected void populateViewHolder(ClubViewHolder viewHolder, Club model, int position) {
 
-                Toast.makeText(getContext(), "Club: "+ model.getName(), Toast.LENGTH_SHORT).show();
-                viewHolder.setName(model.getName());
+                Toast.makeText(getContext(), "Club: "+ model.getClubName(), Toast.LENGTH_SHORT).show();
+                viewHolder.setName(model.getClubName());
 
             }
         };

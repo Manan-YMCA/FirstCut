@@ -1,21 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style clubName="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item clubName="colorPrimary">@color/colorPrimary</item>
+        <item clubName="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item clubName="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!--<style name="UserHomePage" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
-    <style name="UserHomePage" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="colorPrimary">#f2eeee</item>
-        <item name="colorPrimaryDark">#000000</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor">#5fff</item>
-        <item name="android:statusBarColor">#dcdcdc</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    <!--<style clubName="UserHomePage" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
+    <style clubName="UserHomePage" parent="Theme.AppCompat.Light.NoActionBar">
+    <item clubName="colorPrimary">#f2eeee</item>
+        <item clubName="colorPrimaryDark">#000000</item>
+        <item clubName="colorAccent">@color/colorAccent</item>
+        <item clubName="android:navigationBarColor">#5fff</item>
+        <item clubName="android:statusBarColor">#dcdcdc</item>
+        <item clubName="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
 </resources>
