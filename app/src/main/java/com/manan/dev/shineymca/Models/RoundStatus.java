@@ -1,4 +1,4 @@
-package com.manan.dev.shineymca;
+package com.manan.dev.shineymca.Models;
 
 public class RoundStatus {
 

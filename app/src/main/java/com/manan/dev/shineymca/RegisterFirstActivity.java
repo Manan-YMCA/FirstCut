@@ -1,41 +1,23 @@
 package com.manan.dev.shineymca;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
-import java.util.Arrays;
-
-public class SignupAct extends AppCompatActivity {
+public class RegisterFirstActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
@@ -47,7 +29,7 @@ public class SignupAct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_register_first);
         callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
         textView = (TextView)findViewById(R.id.login_text);
@@ -61,7 +43,7 @@ public class SignupAct extends AppCompatActivity {
                         loginButton.setVisibility(View.GONE);
                         loginResul = loginResult;
                         textView.setText("Logged in!");
-//                        Thread thread = new Thread(SignupAct.this);
+//                        Thread thread = new Thread(RegisterFirstActivity.this);
 //                        thread.start();
                     }
 
@@ -80,7 +62,7 @@ public class SignupAct extends AppCompatActivity {
 //                new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
-//                        LoginManager.getInstance().logInWithReadPermissions(SignupAct.this,
+//                        LoginManager.getInstance().logInWithReadPermissions(RegisterFirstActivity.this,
 //                                Arrays.asList("email","public_profile","user_friends"));
 //                    }
 //                }
@@ -103,12 +85,12 @@ public class SignupAct extends AppCompatActivity {
 //                            Toast.makeText(getApplicationContext(),"Login Successful!",Toast.LENGTH_SHORT).show();
 //                            handler.sendEmptyMessage(0);
 //                            finish();
-//                            startActivity(new Intent(SignupAct.this,MainActivity.class));
+//                            startActivity(new Intent(RegisterFirstActivity.this,MainActivity.class));
 //                        } else {
 //                            // If sign in fails, display a message to the user.
 //                            Toast.makeText(getApplicationContext(),"Login failed! Please try again.",Toast.LENGTH_SHORT).show();
 //                            finish();
-//                            startActivity(new Intent(SignupAct.this,MainActivity.class));
+//                            startActivity(new Intent(RegisterFirstActivity.this,MainActivity.class));
 //                        }
 //                    }
 //                });
