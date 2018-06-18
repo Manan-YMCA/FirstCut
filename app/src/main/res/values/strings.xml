@@ -5,4 +5,6 @@
     <string name="notifications">NOTIFICATIONS</string>
     <string name="calendar">CALENDAR</string>
     <string name="home">HOME</string>
+    <string name="facebook_app_id">157807725072724</string>
+    <string name="fb_login_protocol_scheme">fb157807725072724</string>
 </resources>
