@@ -1,6 +1,9 @@
 package com.manan.dev.shineymca;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -33,12 +36,15 @@ public class RegisterFirstActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private LoginButton loginButton;
     private Button mSignInBtn, mSignUpBtn;
+    private ProgressDialog mProgress;
     private TextInputLayout mSignInEmail, mSignInPassword;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_register_first);
+        Context context = this;
+        callSharedPreference(this);
         callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
         loginButton = (LoginButton)findViewById(R.id.register1_facebook_login_button);
@@ -46,6 +52,10 @@ public class RegisterFirstActivity extends AppCompatActivity {
         mSignUpBtn = (Button) findViewById(R.id.register1_sign_up_btn);
         mSignInEmail = (TextInputLayout) findViewById(R.id.register1_sign_in_email);
         mSignInPassword = (TextInputLayout) findViewById(R.id.register1_sign_in_password);
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Loading");
+        mProgress.setMessage("Please wait to enter further details");
+        mProgress.setCanceledOnTouchOutside(false);
 
         mSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,21 +107,25 @@ public class RegisterFirstActivity extends AppCompatActivity {
                 });
     }
 
+    private void callSharedPreference(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("email", "default");
+        editor.commit();
+    }
+
     private void handleFacebookAccessToken(AccessToken token) {
+        mProgress.show();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(RegisterFirstActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            mProgress.dismiss();
                             startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
                             finish();
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Log.d("userd", user.toString());
-                            Log.d("emaild", user.getDisplayName());
-                            Log.d("emaild", user.getEmail());
-                            Log.d("emaild", user.getPhotoUrl().toString());
-                            startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
                         } else {
                             Toast.makeText(RegisterFirstActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         }

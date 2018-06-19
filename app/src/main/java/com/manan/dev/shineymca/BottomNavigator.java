@@ -1,6 +1,8 @@
 package com.manan.dev.shineymca;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,9 +12,18 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.manan.dev.shineymca.Fragments.AboutFragment;
 import com.manan.dev.shineymca.Fragments.CalenderFragment;
 import com.manan.dev.shineymca.Fragments.NotificationFragment;
@@ -24,15 +35,26 @@ public class BottomNavigator extends AppCompatActivity {
     ViewPager UserviewPager;
     private UserTabsPagerAdapter adapter;
     MenuItem prevItem;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_bottom_navigator);
-
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+        mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() == null){
             startActivity(new Intent(BottomNavigator.this, RegisterFirstActivity.class));
             finish();
+        }else{
+            SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            String email = sharedPref.getString("email", "default");
+            if(email.equals("default")){
+                LoginManager.getInstance().logOut();
+                mAuth.getCurrentUser().delete();
+                startActivity(new Intent(BottomNavigator.this, RegisterFirstActivity.class));
+                finish();
+            }
         }
 
         String title = getResources().getString(R.string.app_name);

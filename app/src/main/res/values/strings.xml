@@ -7,4 +7,20 @@
     <string name="home">HOME</string>
     <string name="facebook_app_id">157807725072724</string>
     <string name="fb_login_protocol_scheme">fb157807725072724</string>
+    <string name="preference_file_key">shared_preference_file</string>
+    <string-array name="branch">
+        <item>CE</item>
+        <item>IT</item>
+        <item>ECE</item>
+        <item>EIC</item>
+        <item>ME</item>
+        <item>EL</item>
+        <item>MBA</item>
+        <item>MSC</item>
+        <item>BSC</item>
+    </string-array>
+    <string-array name="year">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

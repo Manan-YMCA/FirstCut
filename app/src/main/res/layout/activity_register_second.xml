@@ -67,6 +67,7 @@
             android:layout_alignParentStart="true">
 
             <android.support.design.widget.TextInputEditText
+                android:digits="abcdefghijklmnopqrstuvwxyz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Username" />
@@ -79,6 +80,8 @@
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
+                android:digits="0123456789"
+                android:maxLength="10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Phone number" />
@@ -88,26 +91,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <android.support.design.widget.TextInputLayout
+            <Spinner
+                android:layout_weight="1"
                 android:id="@+id/register2_branch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/branch"
+                 />
+            <Spinner
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Branch"/>
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
                 android:id="@+id/register2_year"
-                android:layout_width="30dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Year"/>
-            </android.support.design.widget.TextInputLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/year"
+                 />
         </LinearLayout>
 
         <Button
