@@ -50,6 +50,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
         mFacebookBtn = (LoginButton)findViewById(R.id.register2_facebook_login_button);
 
         mAuth = FirebaseAuth.getInstance();
+        Toast.makeText(this, "23:42", Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "User: " + mAuth.getCurrentUser(), Toast.LENGTH_SHORT).show();
         if (mAuth.getCurrentUser() == null) {
             mRegisterBtn.setOnClickListener(new View.OnClickListener() {
