@@ -2,7 +2,6 @@ package com.manan.dev.shineymca;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -29,10 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.manan.dev.shineymca.Fragments.CalenderFragment;
 
 import org.w3c.dom.Text;
 
@@ -46,8 +43,6 @@ public class SignupAct extends AppCompatActivity {
     private LoginResult loginResul;
     private TextView textView;
     private LoginButton loginButton;
-    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,13 +61,8 @@ public class SignupAct extends AppCompatActivity {
                         loginButton.setVisibility(View.GONE);
                         loginResul = loginResult;
                         textView.setText("Logged in!");
-                        Toast.makeText(getApplicationContext(),"Login Successful! ",Toast.LENGTH_SHORT).show();
 //                        Thread thread = new Thread(SignupAct.this);
 //                        thread.start();
-                        String name = user.getDisplayName();
-                        String email = user.getEmail();
-                        Uri photoUrl = user.getPhotoUrl();
-                        String uid = user.getUid();
                     }
 
                     @Override
@@ -86,12 +76,6 @@ public class SignupAct extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"Login failed! Please try again.",Toast.LENGTH_SHORT).show();
                     }
                 });
-        if (user != null) {
-            Toast.makeText(getApplicationContext(),"You are logged in",Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Toast.makeText(getApplicationContext(),"Please Login to proceed",Toast.LENGTH_SHORT).show();
-        }
 //        loginButton.setOnClickListener(
 //                new View.OnClickListener() {
 //                    @Override
@@ -135,4 +119,17 @@ public class SignupAct extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+
+//    @Override
+//    public void run() {
+//        handleFacebookAccessToken(loginResul.getAccessToken());
+//
+//    }
+//    private Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//        }
+//    };
 }

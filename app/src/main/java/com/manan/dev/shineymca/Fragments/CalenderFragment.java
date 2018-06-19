@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.manan.dev.shineymca.R;
-import com.manan.dev.shineymca.SignupAct;
+import com.manan.dev.shineymca.RegisterSecondActivity;
 import com.manan.dev.shineymca.SingleClubActivity;
 
 /**
@@ -36,8 +36,8 @@ public class CalenderFragment extends android.support.v4.app.Fragment{
         textView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(getContext(), RegisterSecondActivity.class));
-                startActivity(new Intent(getContext(), SignupAct.class));
+                startActivity(new Intent(getContext(), RegisterSecondActivity.class));
+//                startActivity(new Intent(getContext(), RegisterFirstActivity.class));
             }
         });
         return mView;

@@ -4,12 +4,14 @@ import java.util.HashMap;
 
 public class User {
     private String userName;
+    private String userUsername;
     private String userID;
     private String[] userClubsInterested;
     private HashMap<String,Integer> userSettingsMap;
     //TODO Add more properties here
-    public User(String userName, String userID) {
+    public User(String userName, String userUsername, String userID) {
         this.userName = userName;
+        this.userUsername = userUsername;
         this.userID = userID;
         //this.userSettingsMap = ???? ; define default settings here
     }
@@ -44,5 +46,13 @@ public class User {
 
     public void setUserSettingsMap(HashMap<String, Integer> userSettingsMap) {
         this.userSettingsMap = userSettingsMap;
+    }
+
+    public String getUserUsername() {
+        return userUsername;
+    }
+
+    public void setUserUsername(String userUsername) {
+        this.userUsername = userUsername;
     }
 }
