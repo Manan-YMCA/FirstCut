@@ -4,13 +4,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -66,7 +70,6 @@ public class RegisterSecondActivity extends AppCompatActivity {
         mProgress.setTitle("Registering");
         mProgress.setMessage("Databasing your details");
         mAuth = FirebaseAuth.getInstance();
-
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = mAuth.getCurrentUser().getUid().toString();
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +85,8 @@ public class RegisterSecondActivity extends AppCompatActivity {
                 M.put("userEmail", user.getEmail());
                 M.put("userYear", userYear);
                 M.put("userBranch", userBranch);
-                M.put("userImage", "default");
+                M.put("userImage", user.getPhotoUrl().toString());
+//                M.put("userImage", "default");
                 M.put("userPhone", userPhone);
                 if (!TextUtils.isEmpty(userUsername) && !TextUtils.isEmpty(userYear) && !TextUtils.isEmpty(userBranch)) {
                         if (isValidMobile(userPhone)) {
