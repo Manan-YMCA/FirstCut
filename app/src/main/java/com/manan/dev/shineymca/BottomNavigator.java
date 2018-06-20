@@ -43,30 +43,25 @@ public class BottomNavigator extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_bottom_navigator);
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() == null){
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email", "default");
+        if(email.equals("default")){
+            if(mAuth.getCurrentUser() != null) {
+                mAuth.getCurrentUser().delete();
+                LoginManager.getInstance().logOut();
+            }
             startActivity(new Intent(BottomNavigator.this, RegisterFirstActivity.class));
             finish();
-        }else{
-            SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-            String email = sharedPref.getString("email", "default");
-            if(email.equals("default")){
-                LoginManager.getInstance().logOut();
-                mAuth.getCurrentUser().delete();
-                startActivity(new Intent(BottomNavigator.this, RegisterFirstActivity.class));
-                finish();
-            }
         }
-
         String title = getResources().getString(R.string.app_name);
         SpannableString s = new SpannableString(title);
         s.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        getSupportActionBar().setTitle(s);
+        getSupportActionBar().setTitle(s);
         UserviewPager = (ViewPager) findViewById(R.id.user_view_pager);
         navBar = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
         navBar.getMenu().getItem(0).setChecked(true);
-      navBar.setOnNavigationItemSelectedListener(
-
+        navBar.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -86,10 +81,8 @@ public class BottomNavigator extends AppCompatActivity {
                            case R.id.action_about:
                                UserviewPager.setCurrentItem(4);
                                break;
-
                        }
                         return false;
-
                     }
                 });
 
@@ -107,13 +100,11 @@ public class BottomNavigator extends AppCompatActivity {
                 navBar.getMenu().getItem(position).setChecked(true);
                 prevItem=navBar.getMenu().getItem(position);
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
         });
-
         setUpViewPager(UserviewPager);
     }
     private void setUpViewPager(ViewPager viewPager) {
@@ -123,7 +114,6 @@ public class BottomNavigator extends AppCompatActivity {
         adapter.addFragment(new NotificationFragment(), "NOTIFICATION");
         adapter.addFragment(new ProfileFragment(), "PROFILE");
         adapter.addFragment(new AboutFragment(), "ABOUT");
-
         UserviewPager.setAdapter(adapter);
     }
 }

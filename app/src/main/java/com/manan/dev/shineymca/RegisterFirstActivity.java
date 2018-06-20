@@ -36,9 +36,7 @@ public class RegisterFirstActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
     private LoginButton loginButton;
-    private Button mSignInBtn, mSignUpBtn;
     private ProgressDialog mProgress;
-    private TextInputLayout mSignInEmail, mSignInPassword;
     private TextView mAdminZone;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,41 +48,10 @@ public class RegisterFirstActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
         loginButton = (LoginButton)findViewById(R.id.register1_facebook_login_button);
-        mSignInBtn = (Button)findViewById(R.id.register1_sign_in_btn);
-        mSignUpBtn = (Button) findViewById(R.id.register1_sign_up_btn);
-        mSignInEmail = (TextInputLayout) findViewById(R.id.register1_sign_in_email);
-        mSignInPassword = (TextInputLayout) findViewById(R.id.register1_sign_in_password);
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Loading");
         mProgress.setMessage("Please wait to enter further details");
         mProgress.setCanceledOnTouchOutside(false);
-
-        mSignInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = mSignInEmail.getEditText().getText().toString();
-                String password = mSignInPassword.getEditText().getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(RegisterFirstActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    startActivity(new Intent(RegisterFirstActivity.this, BottomNavigator.class));
-                                } else {
-                                    Toast.makeText(RegisterFirstActivity.this, "Sign in failure", Toast.LENGTH_SHORT).show();
-                                }
-                                // ...
-                            }
-                        });
-            }
-        });
-
-        mSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
-            }
-        });
 
         mAdminZone = (TextView) findViewById(R.id.tv_admin_zone);
         mAdminZone.setOnClickListener(new View.OnClickListener() {
@@ -153,9 +120,3 @@ public class RegisterFirstActivity extends AppCompatActivity {
     }
 
 }
-
-
-/*
-
-
- */
