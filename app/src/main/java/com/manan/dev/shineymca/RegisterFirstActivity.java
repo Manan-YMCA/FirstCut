@@ -29,6 +29,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.manan.dev.shineymca.AdminZone.AdminLoginActivity;
 
 public class RegisterFirstActivity extends AppCompatActivity {
 
@@ -38,6 +39,7 @@ public class RegisterFirstActivity extends AppCompatActivity {
     private Button mSignInBtn, mSignUpBtn;
     private ProgressDialog mProgress;
     private TextInputLayout mSignInEmail, mSignInPassword;
+    private TextView mAdminZone;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,15 @@ public class RegisterFirstActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
+            }
+        });
+
+        mAdminZone = (TextView) findViewById(R.id.tv_admin_zone);
+        mAdminZone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(RegisterFirstActivity.this, AdminLoginActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
@@ -142,3 +153,9 @@ public class RegisterFirstActivity extends AppCompatActivity {
     }
 
 }
+
+
+/*
+
+
+ */

@@ -8,14 +8,6 @@
     tools:context="com.manan.dev.shineymca.RegisterFirstActivity">
 
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/register1_facebook_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp" />
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/register1_sign_in_email"
         android:layout_width="match_parent"
@@ -69,5 +61,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-210dp"
         android:text="Sign up" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/register1_facebook_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/register1_sign_up_btn"
+        android:layout_marginTop="12dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp" />
+
+    <TextView
+        android:id="@+id/tv_admin_zone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admin Zone"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:padding="8dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textSize="18dp"/>
 
 </RelativeLayout>
