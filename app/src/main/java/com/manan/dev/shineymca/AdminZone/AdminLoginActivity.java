@@ -1,6 +1,7 @@
 package com.manan.dev.shineymca.AdminZone;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.manan.dev.shineymca.R;
+import com.manan.dev.shineymca.Utility.Methods;
 
 public class AdminLoginActivity extends AppCompatActivity {
 
@@ -22,18 +24,21 @@ public class AdminLoginActivity extends AppCompatActivity {
     Button mLogin;
     FirebaseAuth mAuth;
     ProgressDialog pd;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_login);
 
+        mContext = (Context) AdminLoginActivity.this;
+
         initializeVariables();
 
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = mClubEmail.getText().toString();
+                final String email = mClubEmail.getText().toString();
                 String password = mClubPassword.getText().toString();
 
                 if(checker(email, password)){
@@ -44,6 +49,8 @@ public class AdminLoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     pd.dismiss();
+                                    setResult(101);
+                                    Methods.callSharedPreference(getApplicationContext(), email);
                                     startActivity(new Intent(AdminLoginActivity.this, AdminHomeActivity.class));
                                     finish();
                                 } else {
@@ -91,4 +98,6 @@ public class AdminLoginActivity extends AppCompatActivity {
         pd.setCanceledOnTouchOutside(false);
         pd.setCancelable(false);
     }
+
+
 }

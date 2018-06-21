@@ -1,4 +1,4 @@
-package com.manan.dev.shineymca;
+package com.manan.dev.shineymca.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,5 +9,10 @@ public class Methods {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("email", userEmail);
         editor.commit();
+    }
+
+    public static String getEmailSharedPref(Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences("shared_preference_file", Context.MODE_PRIVATE);
+        return sharedPref.getString("email", "default");
     }
 }

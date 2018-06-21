@@ -3,18 +3,10 @@ package com.manan.dev.shineymca;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +24,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.manan.dev.shineymca.AdminZone.AdminLoginActivity;
+import com.manan.dev.shineymca.Utility.Methods;
 
-public class RegisterFirstActivity extends AppCompatActivity {
+public class RegisterFirstActivity extends AppCompatActivity{
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
@@ -60,8 +52,7 @@ public class RegisterFirstActivity extends AppCompatActivity {
         mAdminZone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(RegisterFirstActivity.this, AdminLoginActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivityForResult(new Intent(RegisterFirstActivity.this, AdminLoginActivity.class), 100);
             }
         });
 
@@ -89,11 +80,7 @@ public class RegisterFirstActivity extends AppCompatActivity {
     }
 
     private void callSharedPreference(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("email", "default");
-        editor.commit();
+        Methods.callSharedPreference(context, "default");
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -105,8 +92,14 @@ public class RegisterFirstActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             mProgress.dismiss();
-                            startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
-                            finish();
+                            if(task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
+                                finish();
+                            } else {
+                                Methods.callSharedPreference(getApplicationContext(), task.getResult().getUser().getEmail());
+                                startActivity(new Intent(RegisterFirstActivity.this, BottomNavigator.class));
+                                finish();
+                            }
                         } else {
                             Toast.makeText(RegisterFirstActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         }
@@ -120,6 +113,11 @@ public class RegisterFirstActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100){
+            if(resultCode == 101){
+                finish();
+            }
+        }
     }
 
 }

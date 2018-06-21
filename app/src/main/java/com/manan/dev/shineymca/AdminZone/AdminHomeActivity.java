@@ -3,10 +3,15 @@ package com.manan.dev.shineymca.AdminZone;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.manan.dev.shineymca.BottomNavigator;
 import com.manan.dev.shineymca.R;
+import com.manan.dev.shineymca.Utility.Methods;
 
 public class AdminHomeActivity extends AppCompatActivity {
 
@@ -75,5 +80,24 @@ public class AdminHomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.admin_dashboard_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_logout){
+            FirebaseAuth.getInstance().signOut();
+            Methods.callSharedPreference(getApplicationContext(), "default");
+            startActivity(new Intent(AdminHomeActivity.this, BottomNavigator.class));
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
