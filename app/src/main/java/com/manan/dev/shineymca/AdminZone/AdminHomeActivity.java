@@ -61,7 +61,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         mCoordinators.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(AdminHomeActivity.this, AddCoordinator.class));
             }
         });
 

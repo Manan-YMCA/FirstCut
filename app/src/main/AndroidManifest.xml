@@ -8,8 +8,8 @@
         android:name=".Utility.ApplicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:largeHeap="true"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -41,7 +41,9 @@
         <activity
             android:name=".AdminZone.AdminHomeActivity"
             android:label="ADMIN HOME" />
-        <activity android:name=".AdminZone.AdminLoginActivity"></activity>
+        <activity android:name=".AdminZone.AdminLoginActivity" />
+        <activity android:name=".AdminZone.AddCoordinator" />
+        <activity android:name=".Delete.DeleteAddClubs"/>
     </application>
 
 </manifest>

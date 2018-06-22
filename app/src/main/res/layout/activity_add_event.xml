@@ -77,8 +77,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Date"
+                    android:focusable="false"
                     android:inputType="date"
-                    android:longClickable="false"
                     android:textAlignment="center"
                     android:background="@drawable/background_edit_text"
                     android:padding="4dp" />
@@ -89,8 +89,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Time"
+                    android:focusable="false"
                     android:inputType="time"
-                    android:longClickable="false"
                     android:textAlignment="center"
                     android:background="@drawable/background_edit_text"
                     android:padding="4dp" />

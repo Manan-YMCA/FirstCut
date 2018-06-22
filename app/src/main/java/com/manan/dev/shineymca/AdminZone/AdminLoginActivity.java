@@ -50,7 +50,7 @@ public class AdminLoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     pd.dismiss();
                                     setResult(101);
-                                    Methods.callSharedPreference(getApplicationContext(), email);
+                                    Methods.callSharedPreference(getApplicationContext(), mAuth.getCurrentUser().getDisplayName());
                                     startActivity(new Intent(AdminLoginActivity.this, AdminHomeActivity.class));
                                     finish();
                                 } else {
