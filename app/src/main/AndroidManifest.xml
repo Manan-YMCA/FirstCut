@@ -17,11 +17,7 @@
         <activity
             android:name=".BottomNavigator"
             android:theme="@style/UserHomePage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".SingleClubActivity" />
         <activity android:name=".RoundActivity" />
@@ -41,7 +37,13 @@
         <activity
             android:name=".AdminZone.AdminHomeActivity"
             android:label="ADMIN HOME" />
-        <activity android:name=".AdminZone.AdminLoginActivity" />
+        <activity android:name=".AdminZone.AdminLoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".AdminZone.AddCoordinator" />
         <activity android:name=".Delete.DeleteAddClubs"/>
     </application>
