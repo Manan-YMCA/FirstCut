@@ -39,7 +39,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         clubName = mAuth.getCurrentUser().getDisplayName();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName);
         initializeVariables();
-
+        Toast.makeText(this, mAuth.getCurrentUser().toString(), Toast.LENGTH_SHORT).show();
         setListeners();
 
     }

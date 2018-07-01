@@ -11,6 +11,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -136,6 +137,7 @@ public class BottomNavigator extends AppCompatActivity implements ProfileFragmen
 
 
         } else if (currentUser != null) {
+            Toast.makeText(this, currentUser.toString(), Toast.LENGTH_SHORT).show();
             //Toast.makeText(MainActivity.this, "Switching to Dashboard!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(BottomNavigator.this, AdminHomeActivity.class));
             finish();
