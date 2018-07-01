@@ -16,4 +16,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/home_club_list"></android.support.v7.widget.RecyclerView>
 
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="About"
+        />
+
 </RelativeLayout>

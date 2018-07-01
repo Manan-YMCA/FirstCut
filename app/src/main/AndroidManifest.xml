@@ -43,7 +43,8 @@
             android:label="ADMIN HOME" />
         <activity android:name=".AdminZone.AdminLoginActivity" />
         <activity android:name=".AdminZone.AddCoordinator" />
-        <activity android:name=".Delete.DeleteAddClubs"/>
+        <activity android:name=".Delete.DeleteAddClubs" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

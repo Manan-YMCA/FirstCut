@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
+
     <TextView
+        android:id="@+id/t1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Fragment About"
+        android:text="Know about the developers of this app."
         android:textSize="30sp"/>
+c    <Button
+    android:id="@+id/t2"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_below="@id/t1"
+    android:layout_marginTop="80dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+    android:background="@color/white"
+    android:textAlignment="center"
+    android:textColor="@color/black"
+    android:text="Cordinators"
+    android:textSize="30dp"
+    />
+    <Button
+        android:id="@+id/t3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/t2"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@color/white"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:text="Developers"
+        android:textSize="30dp"
+        />
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
 
-</LinearLayout>
+</RelativeLayout>
