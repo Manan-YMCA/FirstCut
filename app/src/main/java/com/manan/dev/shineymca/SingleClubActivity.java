@@ -29,21 +29,20 @@ public class SingleClubActivity extends AppCompatActivity {
         mRoundCircles.setHasFixedSize(true);
         mRoundCircles.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-
         db = FirebaseDatabase.getInstance().getReference().child("Clubs").child("Rounds").child("Round1");
         Log.d("hello,", db.toString());
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Toast.makeText(SingleClubActivity.this, "Working", Toast.LENGTH_SHORT).show();
-                Log.d("ghab",dataSnapshot.child("status").getValue().toString());
-                Toast.makeText(SingleClubActivity.this, "hello" + dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SingleClubActivity.this, "Working", Toast.LENGTH_SHORT).show();
+//                Log.d("ghab",dataSnapshot.child("status").getValue().toString());
+//                Toast.makeText(SingleClubActivity.this, "hello" + dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(SingleClubActivity.this, "Not Working", Toast.LENGTH_SHORT).show();
-                Log.d("akki", databaseError.toString());
+//                Toast.makeText(SingleClubActivity.this, "Not Working", Toast.LENGTH_SHORT).show();
+//                Log.d("akki", databaseError.toString());
 
             }
         });
