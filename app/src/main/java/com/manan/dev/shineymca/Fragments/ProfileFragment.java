@@ -25,10 +25,6 @@ import com.squareup.picasso.Picasso;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-/**
- * Created by nisha on 6/15/2018.
- */
-
 public class ProfileFragment extends android.support.v4.app.Fragment{
 
     private Button mLogout;

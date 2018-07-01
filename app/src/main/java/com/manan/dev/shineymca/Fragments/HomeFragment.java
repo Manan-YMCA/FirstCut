@@ -47,7 +47,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             protected void populateViewHolder(ClubViewHolder viewHolder, Club model, int position) {
 
-                Toast.makeText(getContext(), "Club: "+ model.getClubName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Club: "+ model.getClubName(), Toast.LENGTH_SHORT).show();
                 viewHolder.setName(model.getClubName());
 
             }
@@ -65,7 +65,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
 
         public void setName(String name){
-            Toast.makeText(mView.getContext(), "Entered", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mView.getContext(), "Entered", Toast.LENGTH_SHORT).show();
             TextView textView = mView.findViewById(R.id.single_club_name);
             textView.setText(name);
         }

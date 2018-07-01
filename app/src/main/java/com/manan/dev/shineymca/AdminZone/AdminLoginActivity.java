@@ -40,7 +40,6 @@ public class AdminLoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String email = mClubEmail.getText().toString();
                 String password = mClubPassword.getText().toString();
-
                 if(checker(email, password)){
                     try {
                         pd.show();
