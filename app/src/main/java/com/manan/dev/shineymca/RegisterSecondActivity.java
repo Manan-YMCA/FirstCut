@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class RegisterSecondActivity extends AppCompatActivity {
 
-    private TextInputLayout mUsername, mPhone;
+    private TextInputLayout mUsername, mPhone, mEmail;
     private Spinner mYear, mBranch;
     private Button mRegisterBtn;
     private FirebaseAuth mAuth;
@@ -37,6 +38,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_register_second);
+        mEmail = (TextInputLayout)findViewById(R.id.register2_email);
         mUsername = (TextInputLayout) findViewById(R.id.register2_username);
         mPhone = (TextInputLayout)findViewById(R.id.register2_phone);
         mYear = (Spinner) findViewById(R.id.register2_year);
@@ -49,6 +51,8 @@ public class RegisterSecondActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = mAuth.getCurrentUser().getUid().toString();
+        if(!user.getEmail().isEmpty())
+            mEmail.getEditText().setText(user.getEmail());
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,42 +60,47 @@ public class RegisterSecondActivity extends AppCompatActivity {
                 String userYear = mYear.getSelectedItem().toString();
                 String userBranch = mBranch.getSelectedItem().toString();
                 String userPhone = mPhone.getEditText().getText().toString();
-                HashMap<String, String> M = new HashMap<String, String>();
-                M.put("userName", user.getDisplayName());
-                M.put("userUsername", userUsername);
-                M.put("userEmail", user.getEmail());
-                M.put("userYear", userYear);
-                M.put("userBranch", userBranch);
-                M.put("userImage", user.getPhotoUrl().toString());
+                String userEmail = mEmail.getEditText().getText().toString();
 //                M.put("userImage", "default");
-                M.put("userPhone", userPhone);
-                if (!TextUtils.isEmpty(userUsername) && !TextUtils.isEmpty(userYear) && !TextUtils.isEmpty(userBranch)) {
-                        if (isValidMobile(userPhone)) {
-                            mProgress.show();
-                            DatabaseReference mRegRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
-                            final DatabaseReference mUsernameRef = FirebaseDatabase.getInstance().getReference().child("Usernames");
-                            mRegRef.setValue(M).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        mUsernameRef.child(userUsername).setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                mProgress.dismiss();
-                                                Toast.makeText(RegisterSecondActivity.this, "Details databased", Toast.LENGTH_SHORT).show();
-                                                Methods.callSharedPreference(getApplicationContext(), user.getEmail());
-                                                startActivity(new Intent(RegisterSecondActivity.this, BottomNavigator.class));
-                                                finish();
-                                            }
-                                        });
-                                    } else {
-                                        mProgress.hide();
-                                        Toast.makeText(RegisterSecondActivity.this, "Some error", Toast.LENGTH_SHORT).show();
+                if (!TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userUsername) && !TextUtils.isEmpty(userYear) && !TextUtils.isEmpty(userBranch)) {
+                        if (isValidMobile(userPhone)){
+                            if(Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+                                HashMap<String, String> M = new HashMap<String, String>();
+                                M.put("userName", user.getDisplayName());
+                                M.put("userUsername", userUsername);
+                                M.put("userEmail", userEmail);
+                                M.put("userYear", userYear);
+                                M.put("userBranch", userBranch);
+                                M.put("userImage", user.getPhotoUrl().toString());
+                                M.put("userPhone", userPhone);
+                                mProgress.show();
+                                DatabaseReference mRegRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+                                final DatabaseReference mUsernameRef = FirebaseDatabase.getInstance().getReference().child("Usernames");
+                                mRegRef.setValue(M).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            mUsernameRef.child(userUsername).setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    mProgress.dismiss();
+                                                    Toast.makeText(RegisterSecondActivity.this, "Details databased", Toast.LENGTH_SHORT).show();
+                                                    Methods.callSharedPreference(getApplicationContext(), user.getEmail());
+                                                    startActivity(new Intent(RegisterSecondActivity.this, BottomNavigator.class));
+                                                    finish();
+                                                }
+                                            });
+                                        } else {
+                                            mProgress.hide();
+                                            Toast.makeText(RegisterSecondActivity.this, "Some error", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }else{
+                                Toast.makeText(RegisterSecondActivity.this, "Invalid Email Address", Toast.LENGTH_SHORT).show();
+                            }
                         }else{
-                            Toast.makeText(RegisterSecondActivity.this, "Check phone number", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterSecondActivity.this, "Invalid phone number", Toast.LENGTH_SHORT).show();
                         }
                 }else{
                     Toast.makeText(RegisterSecondActivity.this, "Empty Fields", Toast.LENGTH_SHORT).show();
