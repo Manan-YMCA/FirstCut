@@ -59,12 +59,12 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
         mView = inflater.inflate(R.layout.fragment_profile, container, false);
         mAuth = FirebaseAuth.getInstance();
         mLogout = (Button)mView.findViewById(R.id.profile_logout_btn);
-        mProfilePic = (ImageView)mView.findViewById(R.id.profile_pict);
-        mName = (TextView)mName.findViewById(R.id.tv_name);
-        mPhone = (TextView)mPhone.findViewById(R.id.tv_phone);
-        mEmail = (TextView)mEmail.findViewById(R.id.tv_email);
-        mBranch = (TextView)mBranch.findViewById(R.id.tv_branch);
-        mYear = (TextView)mYear.findViewById(R.id.tv_year);
+        mProfilePic = (ImageView)mView.findViewById(R.id.profile_pic);
+        mName = (TextView)mView.findViewById(R.id.tv_name);
+        mPhone = (TextView)mView.findViewById(R.id.tv_phone);
+        mEmail = (TextView)mView.findViewById(R.id.tv_email);
+        mBranch = (TextView)mView.findViewById(R.id.tv_branch);
+        mYear = (TextView)mView.findViewById(R.id.tv_year);
 
 
         String uid = mAuth.getCurrentUser().getUid().toString();
@@ -84,6 +84,11 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
                 String branch  = dataSnapshot.child("userBranch").getValue().toString();
                 String year = dataSnapshot.child("userYear").getValue().toString();
 
+                            mName.setText(name);
+                            mEmail.setText(email);
+                            mPhone.setText(phone);
+                            mBranch.setText(branch);
+                            mYear.setText(year);
 
 
             }
