@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -19,7 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.manan.dev.shineymca.Adapters.CoordinatorAdapter;
-import com.manan.dev.shineymca.Fragments.AddCoordinatorFragment;
+import com.manan.dev.shineymca.AdminZone.AdminFragments.AddCoordinatorFragment;
 import com.manan.dev.shineymca.Models.Coordinator;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;

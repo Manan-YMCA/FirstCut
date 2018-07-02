@@ -1,4 +1,4 @@
-package com.manan.dev.shineymca.Fragments;
+package com.manan.dev.shineymca.AdminZone.AdminFragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

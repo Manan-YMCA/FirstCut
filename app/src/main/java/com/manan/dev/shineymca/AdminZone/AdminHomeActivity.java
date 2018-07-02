@@ -1,11 +1,13 @@
 package com.manan.dev.shineymca.AdminZone;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,8 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.manan.dev.shineymca.AdminZone.AdminFragments.AddDescriptionFragment;
 import com.manan.dev.shineymca.BottomNavigator;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;
@@ -27,9 +33,11 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     TextView mAddDescription, mAddNewEvent, mViewAttendees, mResult, mCoordinators;
     private FirebaseAuth mAuth;
-    private DatabaseReference mUserDatabase;
     private String clubName;
     EditText input1;
+    private DatabaseReference mDescriptionReference;
+    private ChildEventListener mDescriptionEventListener;
+    String mClubDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +45,12 @@ public class AdminHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_home);
         mAuth = FirebaseAuth.getInstance();
         clubName = mAuth.getCurrentUser().getDisplayName();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName);
         initializeVariables();
         Toast.makeText(this, mAuth.getCurrentUser().toString(), Toast.LENGTH_SHORT).show();
         setListeners();
+        mClubDescription = "Add Description Here";
 
+        mDescriptionReference = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName);
     }
 
     //giving reference to all the variables
@@ -60,62 +69,14 @@ public class AdminHomeActivity extends AppCompatActivity {
         mAddDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input1 = new EditText(AdminHomeActivity.this);
+                AddDescriptionFragment fragment = new AddDescriptionFragment();
+                FragmentManager fm = getFragmentManager();
+                Bundle bundle = new Bundle();
+                bundle.putString("description", mClubDescription);
 
-                //flag = false;
-                final AlertDialog.Builder alert = new AlertDialog.Builder(AdminHomeActivity.this);
-                final LinearLayout layout = new LinearLayout(AdminHomeActivity.this);
-                layout.setOrientation(LinearLayout.VERTICAL);
-                layout.removeAllViews();
+                fragment.setArguments(bundle);
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-                layoutParams.setMargins(40, 0, 40, 0);
-                final TextView status = new TextView(AdminHomeActivity.this);
-                status.setLayoutParams(layoutParams);
-
-
-                status.setText("Status");
-                input1.setLayoutParams(layoutParams);
-
-
-                input1.setText(mAddDescription.getText());
-                layout.addView(status);
-
-                layout.addView(input1);
-                alert.setTitle("Add Description").setView(layout).setPositiveButton("Save",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                /*
-                                 * User clicked ok
-                                 */
-
-                                boolean checker = checkDetails();
-                                if (checker) {
-                                    status.setText("");
-                                    mUserDatabase.child("Description").setValue(input1.getText().toString());
-                                    mAddDescription.setText(input1.getText().toString());
-                                    layout.removeAllViews();
-                                } else {
-                                    Toast.makeText(AdminHomeActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }).setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                 /*
-                 * User clicked cancel
-                 */
-                                layout.removeAllViews();
-                            }
-                        });
-
-                alert.show();
-
-
+                fragment.show(fm, "Add Description");
             }
         });
 
@@ -190,5 +151,62 @@ public class AdminHomeActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        removeListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addListener();
+    }
+
+    private void addListener() {
+        if(mDescriptionEventListener == null){
+            mDescriptionEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    if(dataSnapshot.getKey().equals("clubDescription")){
+                        mClubDescription = dataSnapshot.getValue().toString();
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    if(dataSnapshot.getKey().equals("clubDescription")){
+                        mClubDescription = dataSnapshot.getValue().toString();
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getKey().equals("clubDescription")){
+                        mClubDescription = dataSnapshot.getValue().toString();
+                    }
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mDescriptionReference.addChildEventListener(mDescriptionEventListener);
+        }
+    }
+
+    private void removeListener() {
+        if(mDescriptionEventListener != null){
+            mDescriptionReference.removeEventListener(mDescriptionEventListener);
+            mDescriptionEventListener = null;
+        }
     }
 }
