@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
@@ -23,6 +24,11 @@ import com.manan.dev.shineymca.Utility.Methods;
 import com.manan.dev.shineymca.R;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ProfileFragment extends android.support.v4.app.Fragment{
@@ -33,6 +39,12 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
     private Context mContext;
+    private TextView mPhone;
+    private TextView mName;
+    private TextView mEmail;
+    private TextView mBranch;
+    private TextView mYear;
+    private List<String> itemlist;
 
     @Override
     public void onAttach(Context context) {
@@ -45,24 +57,47 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
                              Bundle savedInstanceState) {
         FacebookSdk.sdkInitialize(getApplicationContext());
         mView = inflater.inflate(R.layout.fragment_profile, container, false);
-        mLogout = (Button)mView.findViewById(R.id.profile_logout_btn);
-        mProfilePic = (ImageView)mView.findViewById(R.id.profile_picture);
         mAuth = FirebaseAuth.getInstance();
+        mLogout = (Button)mView.findViewById(R.id.profile_logout_btn);
+        mProfilePic = (ImageView)mView.findViewById(R.id.profile_pict);
+        mName = (TextView)mName.findViewById(R.id.tv_name);
+        mPhone = (TextView)mPhone.findViewById(R.id.tv_phone);
+        mEmail = (TextView)mEmail.findViewById(R.id.tv_email);
+        mBranch = (TextView)mBranch.findViewById(R.id.tv_branch);
+        mYear = (TextView)mYear.findViewById(R.id.tv_year);
+
+
         String uid = mAuth.getCurrentUser().getUid().toString();
+
+
         mRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
-        mRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 String s = dataSnapshot.child("userImage").getValue().toString();
                 Toast.makeText(getApplicationContext(), "image" + s, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(s).into(mProfilePic);
+                String name = dataSnapshot.child("userName").getValue().toString();
+                String email = dataSnapshot.child("userEmail").getValue().toString();
+                String phone = dataSnapshot.child("userPhone").getValue().toString();
+                String branch  = dataSnapshot.child("userBranch").getValue().toString();
+                String year = dataSnapshot.child("userYear").getValue().toString();
+
+
+
             }
+
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(getApplicationContext(), "NETWORK ERROR", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,3 +117,4 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
         void finisher(boolean value);
     }
 }
+
