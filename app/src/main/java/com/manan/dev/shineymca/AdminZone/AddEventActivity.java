@@ -107,7 +107,7 @@ public class AddEventActivity extends AppCompatActivity {
     private void initForEventUpload() {
         mAuth = FirebaseAuth.getInstance();
         clubName = mAuth.getCurrentUser().getDisplayName();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("clubEvent");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds").child("clubEvent");
         firebaseStorage = FirebaseStorage.getInstance().getReference();
     }
 
