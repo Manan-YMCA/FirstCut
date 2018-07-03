@@ -58,28 +58,26 @@
 
             />
 
-        <ImageView
-            android:id="@+id/selected"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_below="@+id/r1"
-            android:layout_margin="10dp"
-            android:src="@drawable/icon_selected" />
+        <!--<ImageView-->
+            <!--android:id="@+id/selected"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_below="@+id/r1"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:src="@drawable/icon_selected" />-->
 
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/club_round_circles"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/not_selected"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:src="@drawable/icon_not_selected" />
-
-        </android.support.v7.widget.RecyclerView>
+        <!--<ImageView-->
+            <!--android:id="@+id/not_selected"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="20dp"-->
+            <!--android:src="@drawable/icon_not_selected" />-->
 
 
     </RelativeLayout>

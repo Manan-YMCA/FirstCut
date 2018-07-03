@@ -1,5 +1,7 @@
 package com.manan.dev.shineymca.Models;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 
 public class Event {
@@ -9,8 +11,27 @@ public class Event {
     private ArrayList<Coordinator> Coordinators;
     private ArrayList<FAQ> Faq;
 
+    public Event(String poster, String name, String description, String venue, String specialNotes, String clubname, long date, long time, ArrayList<Coordinator> coordinators, ArrayList<FAQ> faq, long round) {
+        Poster = poster;
+        Name = name;
+        Description = description;
+        Venue = venue;
+        SpecialNotes = specialNotes;
+        Clubname = clubname;
+        Date = date;
+        Time = time;
+        Coordinators = coordinators;
+        Faq = faq;
+        this.round = round;
+    }
+
+    @Exclude
+    private long round;
+
     public Event() {
     }
+
+
 
     public Event(String poster, String name, String description, String venue, String specialNotes, String clubname, long date, long time, ArrayList<Coordinator> coordinators, ArrayList<FAQ> faq) {
         Poster = poster;
@@ -103,5 +124,13 @@ public class Event {
 
     public void setFaq(ArrayList<FAQ> faq) {
         Faq = faq;
+    }
+
+    public long getRound() {
+        return round;
+    }
+
+    public void setRound(long round) {
+        this.round = round;
     }
 }

@@ -65,7 +65,7 @@ import static java.util.Collections.sort;
 public class AddEventActivity extends AppCompatActivity {
 
     ImageView mPoster, mEditPoster, mAddFaq;
-    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes;
+    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes, mRoundCount;
     AutoCompleteTextView mCoordinators;
     LinearLayout mCoordinatorView, mFaqView;
     Button mSubmit;
@@ -76,7 +76,7 @@ public class AddEventActivity extends AppCompatActivity {
     final private int REQ_ID_POSTER = 101;
     Event mCurrEvent;
     Uri mPosterUri;
-    long date, time;
+    long date, time, roundCount;
     ArrayList<EditText> mFaqQuestion, mFaqAnswer;
     ArrayList<FAQ> mFaqs;
     String mClubName;
@@ -84,7 +84,6 @@ public class AddEventActivity extends AppCompatActivity {
     StorageReference firebaseStorage;
     FirebaseAuth mAuth;
     String clubName;
-    String posterUri;
     ProgressDialog mProgressDialog;
 
     @Override
@@ -107,11 +106,14 @@ public class AddEventActivity extends AppCompatActivity {
     private void initForEventUpload() {
         mAuth = FirebaseAuth.getInstance();
         clubName = mAuth.getCurrentUser().getDisplayName();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds").child("clubEvent");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds");
         firebaseStorage = FirebaseStorage.getInstance().getReference();
     }
 
     private void initializeVariables() {
+
+        roundCount = 0;
+
         mPoster = (ImageView) findViewById(R.id.iv_main_poster);
         mEditPoster = (ImageView) findViewById(R.id.iv_edit);
         mAddFaq = (ImageView) findViewById(R.id.iv_add_faq);
@@ -122,6 +124,7 @@ public class AddEventActivity extends AppCompatActivity {
         mTime = (EditText) findViewById(R.id.et_time);
         mVenue = (EditText) findViewById(R.id.et_venue);
         mSpecialNotes = (EditText) findViewById(R.id.et_special_notes);
+        mRoundCount = (EditText) findViewById(R.id.et_rount_count);
 
         mCoordinators = (AutoCompleteTextView) findViewById(R.id.et_coordinators);
 
@@ -245,13 +248,24 @@ public class AddEventActivity extends AppCompatActivity {
     //upload new event
     private void uploadEvent() {
         mCurrEvent = new Event(mPosterUri.toString(), mName.getText().toString(), mDescription.getText().toString(), mVenue.getText().toString(),
-                mSpecialNotes.getText().toString(), mClubName, date, time, mSelectedCorrdinators, mFaqs);
-        mDatabaseRef.setValue(mCurrEvent).addOnCompleteListener(new OnCompleteListener<Void>() {
+                mSpecialNotes.getText().toString(), mClubName, date, time, mSelectedCorrdinators, mFaqs, roundCount);
+        mDatabaseRef.child("clubEvent").setValue(mCurrEvent).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    mProgressDialog.dismiss();
-                    Toast.makeText(AddEventActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                    roundCount = Long.valueOf(mRoundCount.getText().toString());
+                    mDatabaseRef.child("count").setValue(roundCount).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                mProgressDialog.dismiss();
+                                Toast.makeText(AddEventActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            } else {
+                                mProgressDialog.dismiss();
+                                Toast.makeText(AddEventActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 } else {
                     mProgressDialog.dismiss();
                     Toast.makeText(AddEventActivity.this, "Failure", Toast.LENGTH_SHORT).show();
