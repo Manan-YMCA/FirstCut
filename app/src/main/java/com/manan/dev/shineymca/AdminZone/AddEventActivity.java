@@ -2,10 +2,14 @@ package com.manan.dev.shineymca.AdminZone;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -27,15 +31,25 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.manan.dev.shineymca.Adapters.AutocompleteCoordinatorAdapter;
 import com.manan.dev.shineymca.Adapters.CoordinatorAdapter;
 import com.manan.dev.shineymca.Models.Coordinator;
 import com.manan.dev.shineymca.Models.Event;
+import com.manan.dev.shineymca.Models.FAQ;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;
 
@@ -44,14 +58,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Collections.sort;
 
 public class AddEventActivity extends AppCompatActivity {
 
     ImageView mPoster, mEditPoster, mAddFaq;
-    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes;
+    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes ;
     AutoCompleteTextView mCoordinators;
     LinearLayout mCoordinatorView, mFaqView;
     Button mSubmit;
@@ -64,7 +80,14 @@ public class AddEventActivity extends AppCompatActivity {
     Uri mPosterUri;
     long date, time;
     ArrayList<EditText> mFaqQuestion, mFaqAnswer;
+    ArrayList<FAQ> mFaqs;
     String mClubName;
+    DatabaseReference mDatabaseRef;
+    StorageReference firebaseStorage;
+    FirebaseAuth mAuth;
+    String clubName;
+    String posterUri;
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +96,21 @@ public class AddEventActivity extends AppCompatActivity {
 
         initializeVariables();
 
+        initForEventUpload();
+
         addOnClickListeners();
 
         setUpAutoCompleteTextView();
 
+
+    }
+
+
+    private void initForEventUpload() {
+            mAuth = FirebaseAuth.getInstance();
+            clubName = mAuth.getCurrentUser().getDisplayName();
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("events").child(clubName);
+            firebaseStorage = FirebaseStorage.getInstance().getReference();
     }
 
     private void initializeVariables() {
@@ -99,7 +133,7 @@ public class AddEventActivity extends AppCompatActivity {
         mSubmit = (Button) findViewById(R.id.bt_submit);
 
         mClubName = Methods.getEmailSharedPref(AddEventActivity.this);
-
+        mFaqs=new ArrayList<FAQ>();
         mCurrEvent = new Event();
         mFaqQuestion = new ArrayList<>();
         mFaqAnswer = new ArrayList<>();
@@ -186,17 +220,108 @@ public class AddEventActivity extends AppCompatActivity {
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
-                //check if no field is empty (make new function)
-                //then upload poster whose uri is stored in mPosterUri (make new function)
-                //then get uri from firebase storage//
-                //save all the values to mCurrEvent variable (make new function)
-                //upload value to database based on schema as follows
-                //events -> clubname -> {push_id} -> mCurrEvent
-                //clubname is stored in variable mCLubName
+                boolean checker = checkDetails();
+                if(checker){
+                    updatePostersBasedOnDownloadURLs();
+                    if(posterUri!=null){
+                        uploadEvent();
+                    }
+
+
+                }
+                else{
+                    Toast.makeText(AddEventActivity.this,"Invalid Credentials",Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
+    }
+
+    //upload new event
+    private void uploadEvent() {
+        mCurrEvent=new Event(posterUri,mName.getText().toString(),mDescription.getText().toString(),mVenue.getText().toString(),
+                               mSpecialNotes.getText().toString(),mClubName,date,time,mSelectedCorrdinators,mFaqs );
+        mDatabaseRef.push().setValue(mCurrEvent).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    mProgressDialog.dismiss();
+                    Toast.makeText(AddEventActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    mProgressDialog.dismiss();
+                    Toast.makeText(AddEventActivity.this,"Failure",Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+    }
+
+    //download url of poster
+    private void updatePostersBasedOnDownloadURLs() {
+        mProgressDialog=new ProgressDialog(AddEventActivity.this);
+        mProgressDialog.setTitle("Uploading Event");
+        mProgressDialog.setMessage("Please Wait");
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.show();
+        StorageReference filePath=firebaseStorage.child("event_posters").child(UUID.randomUUID().toString());
+        StorageTask<UploadTask.TaskSnapshot> taskSnapshotStorageTask = filePath.putFile(mPosterUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        posterUri = taskSnapshot.getStorage().getDownloadUrl().toString();
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(AddEventActivity.this,"Error in Uploading poster",Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+    }
+
+    private boolean checkDetails() {
+
+        if (!isNetworkAvailable()) {
+            Toast.makeText(AddEventActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (mName.getText().toString().equals("")) {
+            mName.setError("Enter a Name");
+            return false;
+        }
+        if (mDescription.getText().toString().equals("")) {
+            mDescription.setError("Enter a Description");
+            return false;
+        }
+        if (mDate.getText().toString().equals("")) {
+            mDate.setError("Enter a Date");
+            return false;
+        }
+        if (mTime.getText().toString().equals("")) {
+            mTime.setError("Enter a Time");
+            return false;
+        }
+        if (mVenue.getText().toString().equals("")) {
+            mVenue.setError("Enter a Venue");
+            return false;
+        }
+        if (mSpecialNotes.getText().toString().equals("")) {
+            mSpecialNotes.setError("Enter Special Notes");
+            return false;
+        }
+        if(mSelectedCorrdinators.size()<=0){
+            mCoordinators.setError("Enter Coordinates");
+            return false;
+        }
+
+
+        return true;
     }
 
     private void addFaqList() {
@@ -207,6 +332,9 @@ public class AddEventActivity extends AppCompatActivity {
         mFaqQuestion.add(mQuestion);
         mFaqAnswer.add(mAnswer);
         mFaqView.addView(view);
+
+        //mFaqs.add(new FAQ(mQuestion.getText().toString(),mAnswer.getText().toString()));
+
     }
 
     //adding listeners to Autocomplete text view for adding coordinators.
@@ -369,6 +497,13 @@ public class AddEventActivity extends AppCompatActivity {
                 mCoordinatorsAll
         );
         mCoordinators.setAdapter(coordinatorAdapter);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
