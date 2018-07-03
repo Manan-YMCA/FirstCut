@@ -1,29 +1,29 @@
 package com.manan.dev.shineymca.Models;
 
 public class FAQ {
-    private String mQuestion, mAnswer;
+    private String question, answer;
 
-    public FAQ(String mQuestion, String mAnswer) {
-        this.mQuestion = mQuestion;
-        this.mAnswer = mAnswer;
+    public FAQ(String question, String answer) {
+        this.question = question;
+        this.answer = answer;
     }
 
     public FAQ() {
     }
 
-    public String getmQuestion() {
-        return mQuestion;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setmQuestion(String mQuestion) {
-        this.mQuestion = mQuestion;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public String getmAnswer() {
-        return mAnswer;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setmAnswer(String mAnswer) {
-        this.mAnswer = mAnswer;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

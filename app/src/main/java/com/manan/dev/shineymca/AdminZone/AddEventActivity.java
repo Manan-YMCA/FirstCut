@@ -7,15 +7,14 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +30,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,16 +43,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.manan.dev.shineymca.Adapters.AutocompleteCoordinatorAdapter;
-import com.manan.dev.shineymca.Adapters.CoordinatorAdapter;
 import com.manan.dev.shineymca.Models.Coordinator;
 import com.manan.dev.shineymca.Models.Event;
 import com.manan.dev.shineymca.Models.FAQ;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,14 +59,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Collections.sort;
 
 public class AddEventActivity extends AppCompatActivity {
 
     ImageView mPoster, mEditPoster, mAddFaq;
-    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes ;
+    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes;
     AutoCompleteTextView mCoordinators;
     LinearLayout mCoordinatorView, mFaqView;
     Button mSubmit;
@@ -107,10 +105,10 @@ public class AddEventActivity extends AppCompatActivity {
 
 
     private void initForEventUpload() {
-            mAuth = FirebaseAuth.getInstance();
-            clubName = mAuth.getCurrentUser().getDisplayName();
-            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("events").child(clubName);
-            firebaseStorage = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        clubName = mAuth.getCurrentUser().getDisplayName();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("clubEvent");
+        firebaseStorage = FirebaseStorage.getInstance().getReference();
     }
 
     private void initializeVariables() {
@@ -133,7 +131,7 @@ public class AddEventActivity extends AppCompatActivity {
         mSubmit = (Button) findViewById(R.id.bt_submit);
 
         mClubName = Methods.getEmailSharedPref(AddEventActivity.this);
-        mFaqs=new ArrayList<FAQ>();
+        mFaqs = new ArrayList<FAQ>();
         mCurrEvent = new Event();
         mFaqQuestion = new ArrayList<>();
         mFaqAnswer = new ArrayList<>();
@@ -176,7 +174,7 @@ public class AddEventActivity extends AppCompatActivity {
 
                         mDate.setText(sdf.format(myCalendar.getTime()));
 
-                        AddEventActivity.this.date = (myCalendar.getTimeInMillis());
+                        date = (myCalendar.getTimeInMillis());
                     }
                 }, mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select date");
@@ -199,7 +197,7 @@ public class AddEventActivity extends AppCompatActivity {
                         String displayTime = String.format(Locale.ENGLISH, "%02d:%02d", hourOfDay, minute);
 
                         mTime.setText(displayTime);
-                        AddEventActivity.this.time = 1000L * (hourOfDay * 60 * 60 + minute * 60) - TimeZone.getDefault().getRawOffset();
+                        time = 1000L * (hourOfDay * 60 * 60 + minute * 60) - TimeZone.getDefault().getRawOffset();
                     }
                 }, mHour, mMinute, true);
 
@@ -220,37 +218,43 @@ public class AddEventActivity extends AppCompatActivity {
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                populateFaqList();
                 boolean checker = checkDetails();
-                if(checker){
+                if (checker) {
                     updatePostersBasedOnDownloadURLs();
-                    if(posterUri!=null){
-                        uploadEvent();
-                    }
 
 
-                }
-                else{
-                    Toast.makeText(AddEventActivity.this,"Invalid Credentials",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddEventActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
     }
 
+    private void populateFaqList() {
+        mFaqs.clear();
+        for (int i = 0; i < mFaqQuestion.size(); i++) {
+            FAQ faq = new FAQ();
+            faq.setQuestion(mFaqQuestion.get(i).getText().toString());
+            faq.setAnswer(mFaqAnswer.get(i).getText().toString());
+            mFaqs.add(faq);
+        }
+    }
+
     //upload new event
     private void uploadEvent() {
-        mCurrEvent=new Event(posterUri,mName.getText().toString(),mDescription.getText().toString(),mVenue.getText().toString(),
-                               mSpecialNotes.getText().toString(),mClubName,date,time,mSelectedCorrdinators,mFaqs );
-        mDatabaseRef.push().setValue(mCurrEvent).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mCurrEvent = new Event(mPosterUri.toString(), mName.getText().toString(), mDescription.getText().toString(), mVenue.getText().toString(),
+                mSpecialNotes.getText().toString(), mClubName, date, time, mSelectedCorrdinators, mFaqs);
+        mDatabaseRef.setValue(mCurrEvent).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     mProgressDialog.dismiss();
-                    Toast.makeText(AddEventActivity.this,"Success",Toast.LENGTH_SHORT).show();
-                }
-                else{
+                    Toast.makeText(AddEventActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                } else {
                     mProgressDialog.dismiss();
-                    Toast.makeText(AddEventActivity.this,"Failure",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddEventActivity.this, "Failure", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -260,29 +264,54 @@ public class AddEventActivity extends AppCompatActivity {
 
     //download url of poster
     private void updatePostersBasedOnDownloadURLs() {
-        mProgressDialog=new ProgressDialog(AddEventActivity.this);
+        mProgressDialog = new ProgressDialog(AddEventActivity.this);
         mProgressDialog.setTitle("Uploading Event");
         mProgressDialog.setMessage("Please Wait");
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
-        StorageReference filePath=firebaseStorage.child("event_posters").child(UUID.randomUUID().toString());
-        StorageTask<UploadTask.TaskSnapshot> taskSnapshotStorageTask = filePath.putFile(mPosterUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
-                        posterUri = taskSnapshot.getStorage().getDownloadUrl().toString();
+
+        StorageReference filePath = firebaseStorage.child("event_posters").child(UUID.randomUUID().toString());
+        Bitmap bmp = null;
+        String imgName = mPosterUri.getLastPathSegment();
+        try {
+
+            bmp = MediaStore.Images.Media.getBitmap(AddEventActivity.this.getContentResolver(), mPosterUri);
+            bmp = Bitmap.createScaledBitmap(bmp, 500, (int) ((float) bmp.getHeight() / bmp.getWidth() * 500), true);
+            ByteArrayOutputStream boas = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, boas);
 
 
+            imgName = imgName.replace('.', '@');
+            int lastIndex = imgName.lastIndexOf('@');
+
+            String imgExtension = imgName.substring(lastIndex + 1);
+
+            String imageName = clubName + "." + imgExtension;
+
+            firebaseStorage = FirebaseStorage.getInstance().getReference().child("event_posters").child(imageName);
+
+            UploadTask uploadTask = firebaseStorage.putBytes(boas.toByteArray());
+
+            Task<Uri> task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful()){
+                        throw task.getException();
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(AddEventActivity.this,"Error in Uploading poster",Toast.LENGTH_SHORT).show();
-
+                    return firebaseStorage.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        mPosterUri = task.getResult();
+                        uploadEvent();
                     }
-                });
+                }
+            });
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 
     private boolean checkDetails() {
@@ -315,8 +344,30 @@ public class AddEventActivity extends AppCompatActivity {
             mSpecialNotes.setError("Enter Special Notes");
             return false;
         }
-        if(mSelectedCorrdinators.size()<=0){
+        if (mSelectedCorrdinators.size() <= 0) {
             mCoordinators.setError("Enter Coordinates");
+            return false;
+        }
+        if (mPosterUri == null) {
+            Toast.makeText(AddEventActivity.this, "Add a poster first", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        for (int i = 0; i < mFaqQuestion.size(); i++) {
+            if ((mFaqQuestion.get(i).getText().toString().equals("") && !mFaqAnswer.get(i).getText().toString().equals("")) || (!mFaqQuestion.get(i).getText().toString().equals("") && mFaqAnswer.get(i).getText().toString().equals(""))) {
+                if (mFaqAnswer.get(i).getText().toString().equals("")) {
+                    mFaqAnswer.get(i).setError("Answer cannot be empty");
+                    return false;
+                }
+                if (mFaqQuestion.get(i).getText().toString().equals("")) {
+                    mFaqQuestion.get(i).setError("Question cannot be empty");
+                    return false;
+                }
+                return false;
+            }
+        }
+        if (mFaqs.size() == 0) {
+            Toast.makeText(AddEventActivity.this, "FAQs cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -362,8 +413,8 @@ public class AddEventActivity extends AppCompatActivity {
                 final Coordinator mCoordinator = mCoordinatorsAll.get(i);
                 mCoordinators.setText("", false);
 
-                for(int j = 0; j < mSelectedCorrdinators.size(); j++){
-                    if(mCoordinator.getCoordPhone().equals(mSelectedCorrdinators.get(j).getCoordPhone())){
+                for (int j = 0; j < mSelectedCorrdinators.size(); j++) {
+                    if (mCoordinator.getCoordPhone().equals(mSelectedCorrdinators.get(j).getCoordPhone())) {
                         return;
                     }
                 }
@@ -385,8 +436,8 @@ public class AddEventActivity extends AppCompatActivity {
             public void onClick(View view1) {
                 mCoordinatorView.removeView(view);
 
-                for(int k = 0; k < mSelectedCorrdinators.size(); k++){
-                    if(mCoordinator.getCoordPhone().equals(mSelectedCorrdinators.get(k).getCoordPhone())){
+                for (int k = 0; k < mSelectedCorrdinators.size(); k++) {
+                    if (mCoordinator.getCoordPhone().equals(mSelectedCorrdinators.get(k).getCoordPhone())) {
                         mSelectedCorrdinators.remove(k);
                         break;
                     }
@@ -413,7 +464,7 @@ public class AddEventActivity extends AppCompatActivity {
 
     // remove listener when activity is paused.
     private void removeDatabaseListeners() {
-        if(mCoordinatorChildEventListener != null){
+        if (mCoordinatorChildEventListener != null) {
             mCoordinatorDatabaseReference.removeEventListener(mCoordinatorChildEventListener);
             mCoordinatorChildEventListener = null;
         }
@@ -421,7 +472,7 @@ public class AddEventActivity extends AppCompatActivity {
 
     // add listener on databse when activity is resumed.
     private void addDatabaseListeners() {
-        if(mCoordinatorChildEventListener == null){
+        if (mCoordinatorChildEventListener == null) {
             mCoordinatorChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -435,7 +486,7 @@ public class AddEventActivity extends AppCompatActivity {
                             }
                         }
                         updateList();
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("yd", e.getMessage());
                     }
                 }
@@ -452,7 +503,7 @@ public class AddEventActivity extends AppCompatActivity {
                             }
                         }
                         updateList();
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("yd", e.getMessage());
                     }
                 }
@@ -469,7 +520,7 @@ public class AddEventActivity extends AppCompatActivity {
                             }
                         }
                         updateList();
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("yd", e.getMessage());
                     }
                 }
@@ -508,7 +559,7 @@ public class AddEventActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode != RESULT_OK){
+        if (resultCode != RESULT_OK) {
             return;
         }
 
@@ -523,7 +574,7 @@ public class AddEventActivity extends AppCompatActivity {
                         bitmap = Bitmap.createScaledBitmap(bitmap, (int) finalWidth, (int) (finalWidth / bitmap.getWidth() * bitmap.getHeight()),
                                 true);
                         mPoster.setImageBitmap(bitmap);
-                        mPoster .setVisibility(View.VISIBLE);
+                        mPoster.setVisibility(View.VISIBLE);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
