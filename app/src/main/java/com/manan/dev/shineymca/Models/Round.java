@@ -4,14 +4,17 @@ import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 
-public class Event {
+public class Round {
 
     private String Poster, Name, Description, Venue, SpecialNotes, Clubname;
-    private long Date, Time;
+    private long Date, Time, Number;
     private ArrayList<Coordinator> Coordinators;
     private ArrayList<FAQ> Faq;
 
-    public Event(String poster, String name, String description, String venue, String specialNotes, String clubname, long date, long time, ArrayList<Coordinator> coordinators, ArrayList<FAQ> faq, long round) {
+    public Round() {
+    }
+
+    public Round(String poster, String name, String description, String venue, String specialNotes, String clubname, long date, long time, long number, ArrayList<Coordinator> coordinators, ArrayList<FAQ> faq) {
         Poster = poster;
         Name = name;
         Description = description;
@@ -20,28 +23,7 @@ public class Event {
         Clubname = clubname;
         Date = date;
         Time = time;
-        Coordinators = coordinators;
-        Faq = faq;
-        this.round = round;
-    }
-
-    @Exclude
-    private long round;
-
-    public Event() {
-    }
-
-
-
-    public Event(String poster, String name, String description, String venue, String specialNotes, String clubname, long date, long time, ArrayList<Coordinator> coordinators, ArrayList<FAQ> faq) {
-        Poster = poster;
-        Name = name;
-        Description = description;
-        Venue = venue;
-        SpecialNotes = specialNotes;
-        Clubname = clubname;
-        Date = date;
-        Time = time;
+        Number = number;
         Coordinators = coordinators;
         Faq = faq;
     }
@@ -126,11 +108,12 @@ public class Event {
         Faq = faq;
     }
 
-    public long getRound() {
-        return round;
+
+    public long getNumber() {
+        return Number;
     }
 
-    public void setRound(long round) {
-        this.round = round;
+    public void setNumber(long number) {
+        Number = number;
     }
 }

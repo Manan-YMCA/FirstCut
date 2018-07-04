@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.manan.dev.shineymca.Models.Club;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.SingleClubActivity;
+import com.squareup.picasso.Picasso;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 /**
@@ -60,6 +61,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             protected void populateViewHolder(ClubViewHolder viewHolder, Club model, int position) {
                 viewHolder.setName(model.getClubName());
+                viewHolder.setDescription(model.getClubDescription());
+                viewHolder.setIcon(model.getClubIcon());
                 final EasyFlipView mFlip;
                 mFlip = (EasyFlipView)viewHolder.mView.findViewById(R.id.single_club_to_club_specific_intent);
                 mFlip.setFlipEnabled(false);
@@ -116,6 +119,12 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         public void setName(String name){
             TextView textView = mView.findViewById(R.id.single_club_club_name);
             textView.setText(name);
+        }public void setDescription(String name){
+            TextView textView = mView.findViewById(R.id.single_club_description);
+            textView.setText(name);
+        }public void setIcon(String name){
+            ImageView img = mView.findViewById(R.id.single_club_image);
+            Picasso.get().load(name).into(img);
         }
     }
 }

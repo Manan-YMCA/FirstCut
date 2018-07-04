@@ -32,8 +32,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -41,12 +39,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.manan.dev.shineymca.Adapters.AutocompleteCoordinatorAdapter;
 import com.manan.dev.shineymca.Models.Coordinator;
-import com.manan.dev.shineymca.Models.Event;
+import com.manan.dev.shineymca.Models.Round;
 import com.manan.dev.shineymca.Models.FAQ;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;
@@ -60,12 +59,13 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import static java.lang.Math.min;
+import static java.lang.Math.round;
 import static java.util.Collections.sort;
 
-public class AddEventActivity extends AppCompatActivity {
+public class AddRoundActivity extends AppCompatActivity {
 
     ImageView mPoster, mEditPoster, mAddFaq;
-    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes, mRoundCount;
+    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes, mRoundNumber;
     AutoCompleteTextView mCoordinators;
     LinearLayout mCoordinatorView, mFaqView;
     Button mSubmit;
@@ -74,9 +74,9 @@ public class AddEventActivity extends AppCompatActivity {
     ArrayList<Coordinator> mCoordinatorsAll, mSelectedCorrdinators;
     AutocompleteCoordinatorAdapter coordinatorAdapter;
     final private int REQ_ID_POSTER = 101;
-    Event mCurrEvent;
+    Round mCurrRound;
     Uri mPosterUri;
-    long date, time, roundCount;
+    long date, time, roundNumber;
     ArrayList<EditText> mFaqQuestion, mFaqAnswer;
     ArrayList<FAQ> mFaqs;
     String mClubName;
@@ -85,46 +85,54 @@ public class AddEventActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     String clubName;
     ProgressDialog mProgressDialog;
+    private DatabaseReference mRoundCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_event);
-
+        setContentView(R.layout.activity_add_round);
         initializeVariables();
-
         initForEventUpload();
-
         addOnClickListeners();
-
         setUpAutoCompleteTextView();
-
-
+        eventListeners();
     }
 
+    private void eventListeners() {
+        mRoundCount.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                roundNumber = (long) dataSnapshot.getValue()+1;
+                setTitle("Round "+roundNumber);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     private void initForEventUpload() {
         mAuth = FirebaseAuth.getInstance();
         clubName = mAuth.getCurrentUser().getDisplayName();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds");
         firebaseStorage = FirebaseStorage.getInstance().getReference();
+        Log.d("ASIF", clubName);
+        mRoundCount = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("roundCount");
     }
 
     private void initializeVariables() {
-
-        roundCount = 0;
-
+        roundNumber = 0;
         mPoster = (ImageView) findViewById(R.id.iv_main_poster);
         mEditPoster = (ImageView) findViewById(R.id.iv_edit);
         mAddFaq = (ImageView) findViewById(R.id.iv_add_faq);
-
         mName = (EditText) findViewById(R.id.et_event_name);
         mDescription = (EditText) findViewById(R.id.et_description);
         mDate = (EditText) findViewById(R.id.et_date);
         mTime = (EditText) findViewById(R.id.et_time);
         mVenue = (EditText) findViewById(R.id.et_venue);
         mSpecialNotes = (EditText) findViewById(R.id.et_special_notes);
-        mRoundCount = (EditText) findViewById(R.id.et_rount_count);
 
         mCoordinators = (AutoCompleteTextView) findViewById(R.id.et_coordinators);
 
@@ -133,9 +141,9 @@ public class AddEventActivity extends AppCompatActivity {
 
         mSubmit = (Button) findViewById(R.id.bt_submit);
 
-        mClubName = Methods.getEmailSharedPref(AddEventActivity.this);
+        mClubName = Methods.getEmailSharedPref(AddRoundActivity.this);
         mFaqs = new ArrayList<FAQ>();
-        mCurrEvent = new Event();
+        mCurrRound = new Round();
         mFaqQuestion = new ArrayList<>();
         mFaqAnswer = new ArrayList<>();
         mCoordinatorsAll = new ArrayList<>();
@@ -165,7 +173,7 @@ public class AddEventActivity extends AppCompatActivity {
                 final int mMonth = mcurrentDate.get(java.util.Calendar.MONTH);
                 final int mDay = mcurrentDate.get(java.util.Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog mDatePicker = new DatePickerDialog(AddEventActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog mDatePicker = new DatePickerDialog(AddRoundActivity.this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                         java.util.Calendar myCalendar = java.util.Calendar.getInstance();
                         myCalendar.setTimeInMillis(0);
@@ -194,7 +202,7 @@ public class AddEventActivity extends AppCompatActivity {
                 final int mHour = mcurrentDate.get(java.util.Calendar.HOUR_OF_DAY);
                 final int mMinute = mcurrentDate.get(java.util.Calendar.MINUTE);
 
-                TimePickerDialog mTimePicker = new TimePickerDialog(AddEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog mTimePicker = new TimePickerDialog(AddRoundActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         String displayTime = String.format(Locale.ENGLISH, "%02d:%02d", hourOfDay, minute);
@@ -228,7 +236,7 @@ public class AddEventActivity extends AppCompatActivity {
 
 
                 } else {
-                    Toast.makeText(AddEventActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddRoundActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -247,28 +255,27 @@ public class AddEventActivity extends AppCompatActivity {
 
     //upload new event
     private void uploadEvent() {
-        mCurrEvent = new Event(mPosterUri.toString(), mName.getText().toString(), mDescription.getText().toString(), mVenue.getText().toString(),
-                mSpecialNotes.getText().toString(), mClubName, date, time, mSelectedCorrdinators, mFaqs, roundCount);
-        mDatabaseRef.child("clubEvent").setValue(mCurrEvent).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mCurrRound = new Round(mPosterUri.toString(), mName.getText().toString(), mDescription.getText().toString(),
+                mVenue.getText().toString(), mSpecialNotes.getText().toString(), mClubName, date,
+                time, roundNumber, mSelectedCorrdinators, mFaqs);
+        mDatabaseRef.child(String.valueOf(roundNumber)).setValue(mCurrRound).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    roundCount = Long.valueOf(mRoundCount.getText().toString());
-                    mDatabaseRef.child("count").setValue(roundCount).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mRoundCount.setValue(roundNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 mProgressDialog.dismiss();
-                                Toast.makeText(AddEventActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            } else {
-                                mProgressDialog.dismiss();
-                                Toast.makeText(AddEventActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddRoundActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(AddRoundActivity.this, "Asif failed u", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 } else {
                     mProgressDialog.dismiss();
-                    Toast.makeText(AddEventActivity.this, "Failure", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddRoundActivity.this, "Failure", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -278,8 +285,8 @@ public class AddEventActivity extends AppCompatActivity {
 
     //download url of poster
     private void updatePostersBasedOnDownloadURLs() {
-        mProgressDialog = new ProgressDialog(AddEventActivity.this);
-        mProgressDialog.setTitle("Uploading Event");
+        mProgressDialog = new ProgressDialog(AddRoundActivity.this);
+        mProgressDialog.setTitle("Uploading Round");
         mProgressDialog.setMessage("Please Wait");
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
@@ -289,7 +296,7 @@ public class AddEventActivity extends AppCompatActivity {
         String imgName = mPosterUri.getLastPathSegment();
         try {
 
-            bmp = MediaStore.Images.Media.getBitmap(AddEventActivity.this.getContentResolver(), mPosterUri);
+            bmp = MediaStore.Images.Media.getBitmap(AddRoundActivity.this.getContentResolver(), mPosterUri);
             bmp = Bitmap.createScaledBitmap(bmp, 500, (int) ((float) bmp.getHeight() / bmp.getWidth() * 500), true);
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, boas);
@@ -331,7 +338,7 @@ public class AddEventActivity extends AppCompatActivity {
     private boolean checkDetails() {
 
         if (!isNetworkAvailable()) {
-            Toast.makeText(AddEventActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddRoundActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (mName.getText().toString().equals("")) {
@@ -363,7 +370,7 @@ public class AddEventActivity extends AppCompatActivity {
             return false;
         }
         if (mPosterUri == null) {
-            Toast.makeText(AddEventActivity.this, "Add a poster first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddRoundActivity.this, "Add a poster first", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -381,7 +388,7 @@ public class AddEventActivity extends AppCompatActivity {
             }
         }
         if (mFaqs.size() == 0) {
-            Toast.makeText(AddEventActivity.this, "FAQs cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddRoundActivity.this, "FAQs cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -390,7 +397,7 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     private void addFaqList() {
-        @SuppressLint("InflateParams") LinearLayout view = (LinearLayout) LayoutInflater.from(AddEventActivity.this).inflate(R.layout.layout_faq, null, false);
+        @SuppressLint("InflateParams") LinearLayout view = (LinearLayout) LayoutInflater.from(AddRoundActivity.this).inflate(R.layout.layout_faq, null, false);
         EditText mQuestion = (EditText) view.findViewById(R.id.et_faq_question);
         EditText mAnswer = (EditText) view.findViewById(R.id.et_faq_answer);
 
@@ -405,7 +412,7 @@ public class AddEventActivity extends AppCompatActivity {
     //adding listeners to Autocomplete text view for adding coordinators.
     private void setUpAutoCompleteTextView() {
 
-        coordinatorAdapter = new AutocompleteCoordinatorAdapter(AddEventActivity.this,
+        coordinatorAdapter = new AutocompleteCoordinatorAdapter(AddRoundActivity.this,
                 R.layout.coordinator_item_view,
                 R.id.coordinator_item_name,
                 mCoordinatorsAll);
@@ -441,7 +448,7 @@ public class AddEventActivity extends AppCompatActivity {
 
 
     private void addCoordinatorToLayout(final Coordinator mCoordinator) {
-        @SuppressLint("InflateParams") final LinearLayout view = (LinearLayout) LayoutInflater.from(AddEventActivity.this).inflate(R.layout.layout_coordinators, null, false);
+        @SuppressLint("InflateParams") final LinearLayout view = (LinearLayout) LayoutInflater.from(AddRoundActivity.this).inflate(R.layout.layout_coordinators, null, false);
         ((TextView) view.findViewById(R.id.tvUserName)).setText(mCoordinator.getCoordName());
         ((TextView) view.findViewById(R.id.tvUserId)).setText(mCoordinator.getCoordPhone());
 
@@ -556,7 +563,7 @@ public class AddEventActivity extends AppCompatActivity {
     private void updateList() {
         sort(mCoordinatorsAll);
         coordinatorAdapter = new AutocompleteCoordinatorAdapter(
-                AddEventActivity.this,
+                AddRoundActivity.this,
                 R.layout.coordinator_item_view,
                 R.id.coordinator_item_name,
                 mCoordinatorsAll

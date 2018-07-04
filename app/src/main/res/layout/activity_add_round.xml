@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdminZone.AddEventActivity">
+    tools:context=".AdminZone.AddRoundActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -97,15 +97,6 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/et_rount_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/background_edit_text"
-                android:padding="4dp"
-                android:inputType="phone"
-                android:hint="No. of Rounds"/>
 
             <EditText
                 android:id="@+id/et_venue"
@@ -196,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Upload Event" />
+                    android:text="Save" />
             </RelativeLayout>
 
         </LinearLayout>

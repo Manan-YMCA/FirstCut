@@ -2,7 +2,6 @@ package com.manan.dev.shineymca.AdminZone;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +29,7 @@ import com.manan.dev.shineymca.Utility.Methods;
 
 public class AdminHomeActivity extends AppCompatActivity {
 
-    TextView mAddDescription, mAddNewEvent, mViewAttendees, mResult, mCoordinators;
+    TextView mAddDescription, mRounds, mViewAttendees, mResult, mCoordinators;
     private FirebaseAuth mAuth;
     private String clubName;
     EditText input1;
@@ -49,14 +47,14 @@ public class AdminHomeActivity extends AppCompatActivity {
         Toast.makeText(this, mAuth.getCurrentUser().toString(), Toast.LENGTH_SHORT).show();
         setListeners();
         mClubDescription = "Add Description Here";
-
+        Toast.makeText(this, clubName, Toast.LENGTH_SHORT).show();
         mDescriptionReference = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName);
     }
 
     //giving reference to all the variables
     private void initializeVariables() {
         mAddDescription = (TextView) findViewById(R.id.tv_add_description);
-        mAddNewEvent = (TextView) findViewById(R.id.tv_add_event);
+        mRounds = (TextView) findViewById(R.id.admin_home_rounds_all);
         mViewAttendees = (TextView) findViewById(R.id.tv_view_registered);
         mResult = (TextView) findViewById(R.id.tv_result);
         mCoordinators = (TextView) findViewById(R.id.tv_add_coordinators);
@@ -64,7 +62,6 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     //adding listeners to all the TextViews
     private void setListeners() {
-
         //open a dialog box to add/ update the description of a club
         mAddDescription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,10 +78,11 @@ public class AdminHomeActivity extends AppCompatActivity {
         });
 
         //open activity to add new event
-        mAddNewEvent.setOnClickListener(new View.OnClickListener() {
+        mRounds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AdminHomeActivity.this, AddEventActivity.class));
+                startActivity(new Intent(AdminHomeActivity.this, AdminAllRoundsActivity.class));
+//                startActivity(new Intent(AdminHomeActivity.this, AddRoundActivity.class));
             }
         });
 
