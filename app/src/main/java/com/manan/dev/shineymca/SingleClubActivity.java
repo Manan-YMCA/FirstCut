@@ -1,5 +1,6 @@
 package com.manan.dev.shineymca;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +20,7 @@ import com.manan.dev.shineymca.Models.RoundStatus;
 public class SingleClubActivity extends AppCompatActivity {
 
     private RecyclerView mRoundCircles;
-    private DatabaseReference db;
+    private String clubName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,25 +29,7 @@ public class SingleClubActivity extends AppCompatActivity {
         mRoundCircles = (RecyclerView)findViewById(R.id.club_round_circles);
         mRoundCircles.setHasFixedSize(true);
         mRoundCircles.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        db = FirebaseDatabase.getInstance().getReference().child("Clubs").child("Rounds").child("Round1");
-        Log.d("hello,", db.toString());
-        db.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Toast.makeText(SingleClubActivity.this, "Working", Toast.LENGTH_SHORT).show();
-//                Log.d("ghab",dataSnapshot.child("status").getValue().toString());
-//                Toast.makeText(SingleClubActivity.this, "hello" + dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-//                Toast.makeText(SingleClubActivity.this, "Not Working", Toast.LENGTH_SHORT).show();
-//                Log.d("akki", databaseError.toString());
-
-            }
-        });
-
+        clubName = getIntent().getStringExtra("clubName");
     }
 
     @Override
@@ -57,11 +40,17 @@ public class SingleClubActivity extends AppCompatActivity {
                 RoundStatus.class,
                 R.layout.round_circle_layout,
                 RoundViewHolder.class,
-                FirebaseDatabase.getInstance().getReference().child("Clubs").child("Rounds")
+                FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds")
         ) {
             @Override
-            protected void populateViewHolder(RoundViewHolder viewHolder, RoundStatus model, int position) {
-//                viewHolder.setCircle(model.getStatus());
+            protected void populateViewHolder(RoundViewHolder viewHolder, RoundStatus model, final int position) {
+                viewHolder.mView.findViewById(R.id.single_club_round_act).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(SingleClubActivity.this, RoundActivity.class)
+                                .putExtra("clubName", clubName).putExtra("round", String.valueOf(position+1)));
+                    }
+                });
                 Toast.makeText(SingleClubActivity.this, "STATUS: "+model.getStatus(), Toast.LENGTH_SHORT).show();
             }
         };
@@ -78,15 +67,5 @@ public class SingleClubActivity extends AppCompatActivity {
             super(itemView);
             mView = itemView;
         }
-//
-//        ImageView i = (ImageView)mView.findViewById(R.id.round_circle_image);
-//
-//        public void setCircle(String status){
-//            switch (status){
-//                case "Selected":
-//                    Picasso.get().load(uri).into(i);
-//            }
-//        }
-
     }
 }

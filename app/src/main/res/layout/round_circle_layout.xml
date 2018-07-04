@@ -4,10 +4,11 @@
     android:layout_width="wrap_content" android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/round_circle_image"
+        android:layout_margin="5dp"
+        android:id="@+id/single_club_round_act"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_light_normal" />
+        android:src="@drawable/ic_access_time_black_24dp"/>
 </RelativeLayout>

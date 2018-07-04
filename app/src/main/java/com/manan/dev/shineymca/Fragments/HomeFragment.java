@@ -59,7 +59,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 FirebaseDatabase.getInstance().getReference().child("Clubs")
         ) {
             @Override
-            protected void populateViewHolder(ClubViewHolder viewHolder, Club model, int position) {
+            protected void populateViewHolder(ClubViewHolder viewHolder, final Club model, int position) {
                 viewHolder.setName(model.getClubName());
                 viewHolder.setDescription(model.getClubDescription());
                 viewHolder.setIcon(model.getClubIcon());
@@ -72,14 +72,14 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(getContext(), "Ria bna ise", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getContext(), SingleClubActivity.class));
+                        startActivity(new Intent(getContext(), SingleClubActivity.class).putExtra("clubName", model.getClubName()));
                     }
                 });
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(getContext(), "Ria bna ise", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getContext(), SingleClubActivity.class));
+                        startActivity(new Intent(getContext(), SingleClubActivity.class).putExtra("clubName", model.getClubName()));
                     }
                 });
 
@@ -106,16 +106,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         public ClubViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-
         }
-
         public void setName(String name){
             TextView textView = mView.findViewById(R.id.single_club_club_name);
             textView.setText(name);
