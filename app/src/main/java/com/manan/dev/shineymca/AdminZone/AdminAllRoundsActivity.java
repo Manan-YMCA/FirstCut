@@ -42,7 +42,8 @@ public class AdminAllRoundsActivity extends AppCompatActivity {
         mAddRound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AdminAllRoundsActivity.this, AddRoundActivity.class));
+                startActivity(new Intent(AdminAllRoundsActivity.this, AddRoundActivity.class)
+                        .putExtra("roundNumber", 0));
             }
         });
 
@@ -60,13 +61,14 @@ public class AdminAllRoundsActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds")
         ) {
             @Override
-            protected void populateViewHolder(RoundViewHolder viewHolder, Round model, int position) {
+            protected void populateViewHolder(RoundViewHolder viewHolder, final Round model, int position) {
                 viewHolder.setName(model.getName());
                 viewHolder.setNumber(model.getNumber());
                 viewHolder.mView.findViewById(R.id.rounds_all_specific_round_intent).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivity(new Intent(AdminAllRoundsActivity.this, AddRoundActivity.class));
+                        startActivity(new Intent(AdminAllRoundsActivity.this, AddRoundActivity.class)
+                                .putExtra("roundNumber", model.getNumber()));
                     }
                 });
             }

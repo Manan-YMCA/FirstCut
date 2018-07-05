@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -40,6 +41,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -49,11 +51,14 @@ import com.manan.dev.shineymca.Models.Round;
 import com.manan.dev.shineymca.Models.FAQ;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -65,7 +70,7 @@ import static java.util.Collections.sort;
 public class AddRoundActivity extends AppCompatActivity {
 
     ImageView mPoster, mEditPoster, mAddFaq;
-    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes, mRoundNumber;
+    EditText mName, mDescription, mDate, mTime, mVenue, mSpecialNotes;
     AutoCompleteTextView mCoordinators;
     LinearLayout mCoordinatorView, mFaqView;
     Button mSubmit;
@@ -86,6 +91,8 @@ public class AddRoundActivity extends AppCompatActivity {
     String clubName;
     ProgressDialog mProgressDialog;
     private DatabaseReference mRoundCount;
+    private DatabaseReference mRoundReference;
+    private ChildEventListener mRoundListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +102,13 @@ public class AddRoundActivity extends AppCompatActivity {
         initForEventUpload();
         addOnClickListeners();
         setUpAutoCompleteTextView();
-        eventListeners();
+
+        roundNumber = getIntent().getLongExtra("roundNumber", 0);
+        if(roundNumber == 0) {
+            eventListeners();
+        } else {
+            setTitle("Round "+roundNumber);
+        }
     }
 
     private void eventListeners() {
@@ -120,6 +133,7 @@ public class AddRoundActivity extends AppCompatActivity {
         firebaseStorage = FirebaseStorage.getInstance().getReference();
         Log.d("ASIF", clubName);
         mRoundCount = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("roundCount");
+        mRoundReference = FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds");
     }
 
     private void initializeVariables() {
@@ -331,7 +345,8 @@ public class AddRoundActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            e.getMessage();
+            Log.d("yatin", e.getMessage());
+            mProgressDialog.dismiss();
         }
     }
 
@@ -489,6 +504,11 @@ public class AddRoundActivity extends AppCompatActivity {
             mCoordinatorDatabaseReference.removeEventListener(mCoordinatorChildEventListener);
             mCoordinatorChildEventListener = null;
         }
+
+        if(mRoundListener != null){
+            mRoundReference.removeEventListener(mRoundListener);
+            mRoundListener = null;
+        }
     }
 
     // add listener on databse when activity is resumed.
@@ -558,6 +578,125 @@ public class AddRoundActivity extends AppCompatActivity {
             };
             mCoordinatorDatabaseReference.addChildEventListener(mCoordinatorChildEventListener);
         }
+
+        if(mRoundListener == null){
+            mRoundListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    try {
+                        if(dataSnapshot.getKey().equals(String.valueOf(roundNumber))){
+                            Round curr = dataSnapshot.getValue(Round.class);
+                            displayData(curr);
+                        }
+                    } catch (Exception e){
+                        e.getMessage();
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    try {
+                        if(dataSnapshot.getKey().equals(String.valueOf(roundNumber))){
+                            Round curr = dataSnapshot.getValue(Round.class);
+                            displayData(curr);
+                        }
+                    } catch (Exception e){
+                        e.getMessage();
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mRoundReference.addChildEventListener(mRoundListener);
+        }
+    }
+
+    private void displayData(Round curr) {
+        Picasso.get().load(curr.getPoster()).into(mPoster);
+
+        StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(curr.getPoster());
+        try {
+            final File localFile = File.createTempFile("image", "jpg");
+            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    mPosterUri = Uri.fromFile(localFile);
+                }
+            });
+        } catch (Exception e){
+            Log.d("yatin", e.getMessage());
+        }
+
+        mName.setText(curr.getName());
+        mDescription.setText(curr.getDescription());
+        mVenue.setText(curr.getVenue());
+        mSpecialNotes.setText(curr.getSpecialNotes());
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(curr.getDate());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+        String formattedDate = sdf.format(cal.getTime());
+        mDate.setText(formattedDate);
+
+        cal.setTimeInMillis(curr.getTime());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("kk:mm", Locale.US);
+        String formattedTime = sdf1.format(cal.getTime());
+        mTime.setText(formattedTime);
+
+        mSelectedCorrdinators = curr.getCoordinators();
+
+        for(int i = 0; i < curr.getCoordinators().size(); i++){
+            final Coordinator mCoordinator = curr.getCoordinators().get(i);
+            @SuppressLint("InflateParams") final LinearLayout view = (LinearLayout) LayoutInflater.from(AddRoundActivity.this).inflate(R.layout.layout_coordinators, null, false);
+            ((TextView) view.findViewById(R.id.tvUserName)).setText(mCoordinator.getCoordName());
+            ((TextView) view.findViewById(R.id.tvUserId)).setText(mCoordinator.getCoordPhone());
+
+            view.findViewById(R.id.removeCoordinator).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view1) {
+                    mCoordinatorView.removeView(view);
+
+                    for (int k = 0; k < mSelectedCorrdinators.size(); k++) {
+                        if (mCoordinator.getCoordPhone().equals(mSelectedCorrdinators.get(k).getCoordPhone())) {
+                            mSelectedCorrdinators.remove(k);
+                            break;
+                        }
+                    }
+
+                }
+            });
+
+            mCoordinatorView.addView(view);
+        }
+
+        for(int i = 0; i < curr.getFaq().size(); i++){
+            @SuppressLint("InflateParams") LinearLayout view = (LinearLayout) LayoutInflater.from(AddRoundActivity.this).inflate(R.layout.layout_faq, null, false);
+            EditText mQuestion = (EditText) view.findViewById(R.id.et_faq_question);
+            EditText mAnswer = (EditText) view.findViewById(R.id.et_faq_answer);
+
+            mQuestion.setText(curr.getFaq().get(i).getQuestion());
+            mAnswer.setText(curr.getFaq().get(i).getAnswer());
+
+            mFaqQuestion.add(mQuestion);
+            mFaqAnswer.add(mAnswer);
+            mFaqView.addView(view);
+        }
+
+
     }
 
     private void updateList() {

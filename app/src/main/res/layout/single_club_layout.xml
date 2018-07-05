@@ -31,7 +31,7 @@
         <com.wajahatkarim3.easyflipview.EasyFlipView
             android:id="@+id/single_club_to_club_specific_intent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             >
 
             <!-- Back Layout Goes Here -->
