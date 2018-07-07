@@ -5,16 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.manan.dev.shineymca.Models.RoundStatus;
 
 public class SingleClubActivity extends AppCompatActivity {
@@ -38,7 +33,7 @@ public class SingleClubActivity extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<RoundStatus, RoundViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<RoundStatus, RoundViewHolder>(
                 RoundStatus.class,
-                R.layout.round_circle_layout,
+                R.layout.layout_round,
                 RoundViewHolder.class,
                 FirebaseDatabase.getInstance().getReference().child("Clubs").child(clubName).child("Rounds")
         ) {

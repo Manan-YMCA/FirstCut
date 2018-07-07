@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,13 +70,15 @@ public class RegisterFirstActivity extends AppCompatActivity{
                     @Override
                     public void onCancel() {
                         Toast.makeText(getApplicationContext(),"Login failed! Please try again.",Toast.LENGTH_SHORT).show();
-
+                        Log.e("jayati", "XXXXXXXX");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         Toast.makeText(getApplicationContext(),"Login failed! Please try again.",Toast.LENGTH_SHORT).show();
+                        Log.e("jayati", "XXXXXXXX");
                     }
+
                 });
     }
 

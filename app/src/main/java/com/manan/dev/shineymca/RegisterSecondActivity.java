@@ -51,7 +51,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = mAuth.getCurrentUser().getUid().toString();
-        if(!user.getEmail().isEmpty())
+        if(user.getEmail()!= null)
             mEmail.getEditText().setText(user.getEmail());
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +60,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                 String userYear = mYear.getSelectedItem().toString();
                 String userBranch = mBranch.getSelectedItem().toString();
                 String userPhone = mPhone.getEditText().getText().toString();
-                String userEmail = mEmail.getEditText().getText().toString();
+                final String userEmail = mEmail.getEditText().getText().toString();
 //                M.put("userImage", "default");
                 if (!TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userUsername) && !TextUtils.isEmpty(userYear) && !TextUtils.isEmpty(userBranch)) {
                         if (isValidMobile(userPhone)){
@@ -85,7 +85,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     mProgress.dismiss();
                                                     Toast.makeText(RegisterSecondActivity.this, "Details databased", Toast.LENGTH_SHORT).show();
-                                                    Methods.callSharedPreference(getApplicationContext(), user.getEmail());
+                                                    Methods.callSharedPreference(getApplicationContext(), userEmail);
                                                     startActivity(new Intent(RegisterSecondActivity.this, BottomNavigator.class));
                                                     finish();
                                                 }
