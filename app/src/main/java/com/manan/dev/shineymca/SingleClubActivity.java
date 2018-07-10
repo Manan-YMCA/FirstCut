@@ -23,7 +23,7 @@ public class SingleClubActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single_club);
         mRoundCircles = (RecyclerView)findViewById(R.id.club_round_circles);
         mRoundCircles.setHasFixedSize(true);
-        mRoundCircles.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRoundCircles.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         clubName = getIntent().getStringExtra("clubName");
     }
 
@@ -39,7 +39,7 @@ public class SingleClubActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(RoundViewHolder viewHolder, RoundStatus model, final int position) {
-                viewHolder.mView.findViewById(R.id.single_club_round_act).setOnClickListener(new View.OnClickListener() {
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         startActivity(new Intent(SingleClubActivity.this, RoundActivity.class)

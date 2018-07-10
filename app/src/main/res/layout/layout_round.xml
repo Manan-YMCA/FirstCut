@@ -59,7 +59,8 @@
         android:layout_below="@+id/round_name"
         android:layout_gravity="left"
         android:padding="10dp"
-        android:src="@drawable/icon_selected" />
+        android:src="@drawable/ic_access_time_black_24dp" />
+        <!--android:src="@drawable/icon_selected" />-->
 
     <ImageView
         android:id="@+id/nselected"
@@ -69,7 +70,8 @@
         android:layout_gravity="left"
         android:layout_marginStart="120dp"
         android:padding="10dp"
-        android:src="@drawable/icon_not_selected" />
+        android:src="@drawable/ic_access_time_black_24dp" />
+        <!--android:src="@drawable/icon_not_selected" />-->
 
     <ImageView
         android:id="@+id/completed"
@@ -79,7 +81,8 @@
         android:layout_gravity="left"
         android:layout_marginStart="250dp"
         android:padding="10dp"
-        android:src="@drawable/round_completed" />
+        android:src="@drawable/ic_access_time_black_24dp" />
+        <!--android:src="@drawable/round_completed" />-->
 
 
     <TextView

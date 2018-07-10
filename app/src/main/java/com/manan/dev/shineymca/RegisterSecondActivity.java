@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -51,7 +52,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = mAuth.getCurrentUser().getUid().toString();
-        if(user.getEmail()!= null)
+        if(user.getEmail() != null)
             mEmail.getEditText().setText(user.getEmail());
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
