@@ -46,7 +46,7 @@
         android:layout_marginTop="41dp"
         android:padding="5dp"
         android:text="Written Test"
-        android:textColor="#000080"
+        android:textColor="#ff4000"
         android:textStyle="italic"
         android:textSize="20dp" />
 
