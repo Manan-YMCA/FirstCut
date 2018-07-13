@@ -305,7 +305,6 @@ public class AddRoundActivity extends AppCompatActivity {
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
 
-        StorageReference filePath = firebaseStorage.child("event_posters").child(UUID.randomUUID().toString());
         Bitmap bmp = null;
         String imgName = mPosterUri.getLastPathSegment();
         try {
@@ -489,6 +488,12 @@ public class AddRoundActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mCoordinatorsAll.clear();
+        mSelectedCorrdinators.clear();
+        mCoordinatorView.removeAllViews();
+        mFaqAnswer.clear();
+        mFaqQuestion.clear();
+        mFaqs.clear();
+        mFaqView.removeAllViews();
         removeDatabaseListeners();
     }
 
