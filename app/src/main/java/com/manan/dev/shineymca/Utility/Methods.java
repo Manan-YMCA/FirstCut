@@ -15,4 +15,15 @@ public class Methods {
         SharedPreferences sharedPref = context.getSharedPreferences("shared_preference_file", Context.MODE_PRIVATE);
         return sharedPref.getString("email", "default");
     }
+    public static void callUserIDSharedPreference(Context context, String userID) {
+        SharedPreferences sharedPref = context.getSharedPreferences("shared_preference_file", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("uid", userID);
+        editor.commit();
+    }
+
+    public static String getUserIDSharedPref(Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences("shared_preference_file", Context.MODE_PRIVATE);
+        return sharedPref.getString("uid", "default");
+    }
 }

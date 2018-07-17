@@ -2,6 +2,7 @@ package com.manan.dev.shineymca;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                 String userBranch = mBranch.getSelectedItem().toString();
                 String userPhone = mPhone.getEditText().getText().toString();
                 final String userEmail = mEmail.getEditText().getText().toString();
+                String deviceID= user.getIdToken(true).toString();
 //                M.put("userImage", "default");
                 if (!TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userUsername) && !TextUtils.isEmpty(userYear) && !TextUtils.isEmpty(userBranch)) {
                         if (isValidMobile(userPhone)){
@@ -74,6 +76,8 @@ public class RegisterSecondActivity extends AppCompatActivity {
                                 M.put("userBranch", userBranch);
                                 M.put("userImage", user.getPhotoUrl().toString());
                                 M.put("userPhone", userPhone);
+                                M.put("deviceID",deviceID);
+                               // M.put("userQRCode",userQRcode);
                                 mProgress.show();
                                 DatabaseReference mRegRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
                                 final DatabaseReference mUsernameRef = FirebaseDatabase.getInstance().getReference().child("Usernames");
@@ -87,6 +91,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                                                     mProgress.dismiss();
                                                     Toast.makeText(RegisterSecondActivity.this, "Details databased", Toast.LENGTH_SHORT).show();
                                                     Methods.callSharedPreference(getApplicationContext(), userEmail);
+                                                    Methods.callUserIDSharedPreference(getApplicationContext(), uid);
                                                     startActivity(new Intent(RegisterSecondActivity.this, BottomNavigator.class));
                                                     finish();
                                                 }

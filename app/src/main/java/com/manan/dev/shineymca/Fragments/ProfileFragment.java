@@ -1,13 +1,17 @@
 package com.manan.dev.shineymca.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.manan.dev.shineymca.BottomNavigator;
 import com.manan.dev.shineymca.Utility.Methods;
 import com.manan.dev.shineymca.R;
+import com.manan.dev.shineymca.Utility.UserQRCodeGenerator;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -30,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.manan.dev.shineymca.Utility.Methods.getUserIDSharedPref;
 
 public class ProfileFragment extends android.support.v4.app.Fragment{
 
@@ -44,6 +50,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
     private TextView mEmail;
     private TextView mBranch;
     private TextView mYear;
+    private ProgressDialog mProgress;
     private List<String> itemlist;
 
     @Override
@@ -101,7 +108,24 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
             }
         });
 
+        mProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                final LinearLayout layout = new LinearLayout(mContext);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                ImageView QRCode=new ImageView(mContext);
+                UserQRCodeGenerator codeGenerator = new UserQRCodeGenerator();
+                Bitmap qrCode = codeGenerator.GenerateClick(getUserIDSharedPref(mContext), mContext, 800, 940);
+                QRCode.setImageBitmap(qrCode);
+                layout.addView(QRCode);
+                alertDialog.setView(layout);
+                alertDialog.show();
+                alertDialog.setCanceledOnTouchOutside(true);
 
+            }
+        });
 
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
