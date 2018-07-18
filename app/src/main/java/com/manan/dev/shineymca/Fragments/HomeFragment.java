@@ -72,7 +72,12 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(getContext(), "Ria bna ise", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getContext(), SingleClubActivity.class).putExtra("clubName", model.getClubName()));
+                        Intent intent=new Intent(getContext(),SingleClubActivity.class);
+                        Bundle extras=new Bundle();
+                        extras.putString("clubName",model.getClubName());
+                        extras.putString("clubDescription",model.getClubDescription());
+                        intent.putExtras(extras);
+                        startActivity(intent);
                     }
                 });
                 b.setOnClickListener(new View.OnClickListener() {

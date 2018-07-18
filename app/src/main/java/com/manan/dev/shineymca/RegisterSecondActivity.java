@@ -63,7 +63,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                 String userBranch = mBranch.getSelectedItem().toString();
                 String userPhone = mPhone.getEditText().getText().toString();
                 final String userEmail = mEmail.getEditText().getText().toString();
-                String deviceID= user.getIdToken(true).toString();
+               // String deviceID= user.getIdToken(true).toString();
 //                M.put("userImage", "default");
                 if (!TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userUsername) && !TextUtils.isEmpty(userYear) && !TextUtils.isEmpty(userBranch)) {
                         if (isValidMobile(userPhone)){
@@ -76,7 +76,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                                 M.put("userBranch", userBranch);
                                 M.put("userImage", user.getPhotoUrl().toString());
                                 M.put("userPhone", userPhone);
-                                M.put("deviceID",deviceID);
+                              //  M.put("deviceID",deviceID);
                                // M.put("userQRCode",userQRcode);
                                 mProgress.show();
                                 DatabaseReference mRegRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
