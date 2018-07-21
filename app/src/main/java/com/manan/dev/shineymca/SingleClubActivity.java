@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class SingleClubActivity extends AppCompatActivity {
     private TextView mRound;
     private TextView mRname;
     private View mView;
+    private Button mreg_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +45,7 @@ public class SingleClubActivity extends AppCompatActivity {
         mRoundCircles.setHasFixedSize(true);
         mRoundCircles.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         clubName = getIntent().getStringExtra("clubName");
-
+        mreg_btn=(Button)mView.findViewById(R.id.reg);
         String uid = mAuth.getCurrentUser().getUid().toString();
         mRef=FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
         ValueEventListener valueEventListener = mRef.addValueEventListener(new ValueEventListener() {

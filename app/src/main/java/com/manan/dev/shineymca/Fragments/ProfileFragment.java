@@ -50,6 +50,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
     private TextView mEmail;
     private TextView mBranch;
     private TextView mYear;
+    private TextView mReg;
     private ProgressDialog mProgress;
     private List<String> itemlist;
 
@@ -72,7 +73,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
         mEmail = (TextView)mView.findViewById(R.id.tv_email);
         mBranch = (TextView)mView.findViewById(R.id.tv_branch);
         mYear = (TextView)mView.findViewById(R.id.tv_year);
-
+        mReg = (TextView)mView.findViewById(R.id.name_events);
 
         String uid = mAuth.getCurrentUser().getUid().toString();
 
@@ -90,13 +91,13 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
                 String phone = dataSnapshot.child("userPhone").getValue().toString();
                 String branch  = dataSnapshot.child("userBranch").getValue().toString();
                 String year = dataSnapshot.child("userYear").getValue().toString();
-
+                String event = dataSnapshot.child("registeredEvents").getValue().toString();
                             mName.setText(name);
                             mEmail.setText(email);
                             mPhone.setText(phone);
                             mBranch.setText(branch);
                             mYear.setText(year);
-
+                            mReg.setText(event);
 
             }
 

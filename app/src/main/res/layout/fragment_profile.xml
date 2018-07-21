@@ -103,6 +103,26 @@
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 tools:text="2" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/reg_events"
+                android:textColor="#000765"
+                android:layout_below="@+id/tv_year"
+                android:textSize="20dp"
+                android:text="REGISTERED IN:"
+                android:fontFamily="serif"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_events"
+                android:textColor="#000765"
+                android:layout_below="@+id/reg_events"
+                android:textSize="20dp"
+                android:text="Written Test"
+                android:textAlignment="center"
+                android:fontFamily="sans-serif"/>
+
 
         </RelativeLayout>
 
@@ -116,7 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/rl"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="80dp"
             android:text="Logout"
             tools:ignore="UnknownId" />
 
