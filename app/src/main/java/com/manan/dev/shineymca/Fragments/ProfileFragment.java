@@ -72,7 +72,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
         mEmail = (TextView)mView.findViewById(R.id.tv_email);
         mBranch = (TextView)mView.findViewById(R.id.tv_branch);
         mYear = (TextView)mView.findViewById(R.id.tv_year);
-
+        Toast.makeText(getApplicationContext(),getUserIDSharedPref(mContext),Toast.LENGTH_SHORT).show();
 
         String uid = mAuth.getCurrentUser().getUid().toString();
 
@@ -116,6 +116,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
                 final LinearLayout layout = new LinearLayout(mContext);
                 layout.setOrientation(LinearLayout.VERTICAL);
                 ImageView QRCode=new ImageView(mContext);
+
                 UserQRCodeGenerator codeGenerator = new UserQRCodeGenerator();
                 Bitmap qrCode = codeGenerator.GenerateClick(getUserIDSharedPref(mContext), mContext, 800, 940);
                 QRCode.setImageBitmap(qrCode);

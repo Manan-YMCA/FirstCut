@@ -84,6 +84,7 @@ public class RegisterFirstActivity extends AppCompatActivity{
 
     private void callSharedPreference(Context context) {
         Methods.callSharedPreference(context, "default");
+        Methods.callUserIDSharedPreference(context,"default");
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -97,9 +98,11 @@ public class RegisterFirstActivity extends AppCompatActivity{
                             mProgress.dismiss();
                             if(task.getResult().getAdditionalUserInfo().isNewUser()) {
                                 startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
+                                Methods.callUserIDSharedPreference(getApplicationContext(), task.getResult().getUser().getUid());
                                 finish();
                             } else {
                                 Methods.callSharedPreference(getApplicationContext(), task.getResult().getUser().getEmail());
+                                Methods.callUserIDSharedPreference(getApplicationContext(), task.getResult().getUser().getUid());
                                 startActivity(new Intent(RegisterFirstActivity.this, BottomNavigator.class));
                                 finish();
                             }
