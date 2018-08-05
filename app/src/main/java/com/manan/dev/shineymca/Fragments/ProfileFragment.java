@@ -91,13 +91,15 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
                 String phone = dataSnapshot.child("userPhone").getValue().toString();
                 String branch  = dataSnapshot.child("userBranch").getValue().toString();
                 String year = dataSnapshot.child("userYear").getValue().toString();
-                String event = dataSnapshot.child("registeredEvents").getValue().toString();
                             mName.setText(name);
                             mEmail.setText(email);
                             mPhone.setText(phone);
                             mBranch.setText(branch);
                             mYear.setText(year);
-                            mReg.setText(event);
+                            if(dataSnapshot.hasChild("registeredEvents")) {
+                                String event = dataSnapshot.child("registeredEvents").getValue().toString();
+                                mReg.setText(event);
+                            }
 
             }
 
@@ -127,7 +129,6 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
 
             }
         });
-
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

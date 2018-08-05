@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.manan.dev.shineymca.Utility.Methods;
 
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                               //  M.put("deviceID",deviceID);
                                // M.put("userQRCode",userQRcode);
                                 mProgress.show();
-                                DatabaseReference mRegRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+                                final DatabaseReference mRegRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
                                 final DatabaseReference mUsernameRef = FirebaseDatabase.getInstance().getReference().child("Usernames");
                                 mRegRef.setValue(M).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -88,6 +89,7 @@ public class RegisterSecondActivity extends AppCompatActivity {
                                             mUsernameRef.child(userUsername).setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
+                                                    mRegRef.child("token").setValue(FirebaseInstanceId.getInstance().getToken());
                                                     mProgress.dismiss();
                                                     Toast.makeText(RegisterSecondActivity.this, "Details databased", Toast.LENGTH_SHORT).show();
                                                     Methods.callSharedPreference(getApplicationContext(), userEmail);

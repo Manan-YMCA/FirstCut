@@ -8,10 +8,17 @@ public class User {
     private String userID;
     private String[] userClubsInterested;
     private HashMap<String,Integer> userSettingsMap;
+    private String attendance;
     //TODO Add more properties here
+    public User(){}
     public User(String userName, String userUsername, String userID) {
         this.userName = userName;
         this.userUsername = userUsername;
+        this.userID = userID;
+        //this.userSettingsMap = ???? ; define default settings here
+    }
+    public User(String userID , String attendance) {
+        this.attendance = attendance;
         this.userID = userID;
         //this.userSettingsMap = ???? ; define default settings here
     }

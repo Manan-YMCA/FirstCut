@@ -14,6 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".Utility.MyFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".Utility.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity android:name=".RegisterFirstActivity" />
         <activity
             android:name=".BottomNavigator"
@@ -25,8 +36,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SingleClubActivity" />
-        <activity android:name=".RoundActivity">
-           </activity>
+        <activity android:name=".RoundActivity" />
         <activity android:name=".RegisterSecondActivity" />
 
         <meta-data
@@ -43,11 +53,12 @@
         <activity
             android:name=".AdminZone.AdminHomeActivity"
             android:label="ADMIN HOME" />
-        <activity android:name=".AdminZone.AdminLoginActivity"></activity>
+        <activity android:name=".AdminZone.AdminLoginActivity" />
         <activity android:name=".AdminZone.AddCoordinator" />
-        <activity android:name=".Delete.DeleteAddClubs" >
-        </activity>
-        <activity android:name=".AdminZone.AdminAllRoundsActivity"></activity>
+        <activity android:name=".Delete.DeleteAddClubs" />
+        <activity android:name=".AdminZone.AdminAllRoundsActivity" />
+        <activity android:name=".AdminZone.AddAttendeesActivity" />
+        <activity android:name=".AdminZone.AddUserNameActivity"></activity>
     </application>
 
 </manifest>

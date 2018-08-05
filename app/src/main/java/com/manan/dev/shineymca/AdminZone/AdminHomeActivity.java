@@ -29,7 +29,7 @@ import com.manan.dev.shineymca.Utility.Methods;
 
 public class AdminHomeActivity extends AppCompatActivity {
 
-    TextView mAddDescription, mRounds, mViewAttendees, mResult, mCoordinators;
+    TextView mAddDescription, mRounds, mViewAttendees, mResult, mCoordinators,mAddAttendees;
     private FirebaseAuth mAuth;
     private String clubName;
     EditText input1;
@@ -58,11 +58,15 @@ public class AdminHomeActivity extends AppCompatActivity {
         mViewAttendees = (TextView) findViewById(R.id.tv_view_registered);
         mResult = (TextView) findViewById(R.id.tv_result);
         mCoordinators = (TextView) findViewById(R.id.tv_add_coordinators);
+        mAddAttendees = (TextView)findViewById(R.id.tv_add_attendees);
+
     }
 
     //adding listeners to all the TextViews
     private void setListeners() {
-        //open a dialog box to add/ update the description of a club
+        //open a dial
+
+        // og box to add/ update the description of a club
         mAddDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +112,13 @@ public class AdminHomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        mAddAttendees.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHomeActivity.this,AddAttendeesActivity.class));
             }
         });
     }
