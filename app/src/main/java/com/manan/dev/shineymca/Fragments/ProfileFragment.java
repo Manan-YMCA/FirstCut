@@ -74,6 +74,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
         mBranch = (TextView)mView.findViewById(R.id.tv_branch);
         mYear = (TextView)mView.findViewById(R.id.tv_year);
         mReg = (TextView)mView.findViewById(R.id.name_events);
+        Toast.makeText(getApplicationContext(),getUserIDSharedPref(mContext),Toast.LENGTH_SHORT).show();
 
         String uid = mAuth.getCurrentUser().getUid().toString();
 
