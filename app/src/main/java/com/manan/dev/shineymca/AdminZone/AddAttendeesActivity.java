@@ -53,10 +53,12 @@ public class AddAttendeesActivity extends AppCompatActivity {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             final String userKey = scanResult.getContents();
-            Log.d("prerna", userKey);
-            databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).child("attendance").setValue("Present");
-            User user1 = new User(userKey, "Present");
-            databaseReference.child("Clubs").child(clubName).child("Attendees").push().setValue(user1);
+            if(userKey != null ) {
+                Log.d("prerna", userKey);
+                databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).child("attendance").setValue("Present");
+                User user1 = new User(userKey, "Present");
+                databaseReference.child("Clubs").child(clubName).child("Attendees").push().setValue(user1);
+            }
 
         }
     }
