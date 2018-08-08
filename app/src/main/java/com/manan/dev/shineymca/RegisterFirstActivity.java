@@ -25,6 +25,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.manan.dev.shineymca.AdminZone.AdminLoginActivity;
 import com.manan.dev.shineymca.Utility.Methods;
 
@@ -45,6 +46,7 @@ public class RegisterFirstActivity extends AppCompatActivity{
         callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
         loginButton = (LoginButton)findViewById(R.id.register1_facebook_login_button);
+        loginButton.setReadPermissions("email", "public_profile");
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Loading");
         mProgress.setMessage("Please wait to enter further details");
@@ -61,6 +63,7 @@ public class RegisterFirstActivity extends AppCompatActivity{
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        Log.d("prerna",loginResult.toString());
                         loginButton.setVisibility(View.GONE);
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
                         handleFacebookAccessToken(loginResult.getAccessToken());
@@ -97,10 +100,16 @@ public class RegisterFirstActivity extends AppCompatActivity{
                         if (task.isSuccessful()) {
                             mProgress.dismiss();
                             if(task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                Log.d("prerna","a");
                                 startActivity(new Intent(RegisterFirstActivity.this, RegisterSecondActivity.class));
                                 Methods.callUserIDSharedPreference(getApplicationContext(), task.getResult().getUser().getUid());
                                 finish();
                             } else {
+                                Log.d("prerna","b");
+                                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                Log.d("prerna",firebaseUser.getUid());
+                                Log.d("prerna",task.getResult().getUser().getUid());
+                                Log.d("prerna",firebaseUser.getEmail());
                                 Methods.callSharedPreference(getApplicationContext(), task.getResult().getUser().getEmail());
                                 Methods.callUserIDSharedPreference(getApplicationContext(), task.getResult().getUser().getUid());
                                 startActivity(new Intent(RegisterFirstActivity.this, BottomNavigator.class));

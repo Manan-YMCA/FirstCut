@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,16 +78,16 @@ public class ProfileFragment extends android.support.v4.app.Fragment{
         Toast.makeText(getApplicationContext(),getUserIDSharedPref(mContext),Toast.LENGTH_SHORT).show();
 
         String uid = mAuth.getCurrentUser().getUid().toString();
-
+        Log.d("prerna",uid);
 
         mRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
         ValueEventListener valueEventListener = mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                if(dataSnapshot.hasChild("userImage")){
                 String s = dataSnapshot.child("userImage").getValue().toString();
                 Toast.makeText(getApplicationContext(), "image" + s, Toast.LENGTH_SHORT).show();
-                Picasso.get().load(s).into(mProfilePic);
+                Picasso.get().load(s).into(mProfilePic);}
                 String name = dataSnapshot.child("userName").getValue().toString();
                 String email = dataSnapshot.child("userEmail").getValue().toString();
                 String phone = dataSnapshot.child("userPhone").getValue().toString();
