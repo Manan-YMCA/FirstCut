@@ -109,6 +109,7 @@ public class AddRoundActivity extends AppCompatActivity {
         } else {
             setTitle("Round "+roundNumber);
         }
+        addDatabaseListeners();
     }
 
     private void eventListeners() {
@@ -277,7 +278,7 @@ public class AddRoundActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     mRoundCount.setValue(roundNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
+                              @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 mProgressDialog.dismiss();
@@ -487,20 +488,14 @@ public class AddRoundActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mCoordinatorsAll.clear();
-        mSelectedCorrdinators.clear();
-        mCoordinatorView.removeAllViews();
-        mFaqAnswer.clear();
-        mFaqQuestion.clear();
-        mFaqs.clear();
-        mFaqView.removeAllViews();
+
         removeDatabaseListeners();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        addDatabaseListeners();
+
     }
 
     // remove listener when activity is paused.
@@ -630,6 +625,7 @@ public class AddRoundActivity extends AppCompatActivity {
     }
 
     private void displayData(Round curr) {
+
         Picasso.get().load(curr.getPoster()).into(mPoster);
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(curr.getPoster());
@@ -663,6 +659,9 @@ public class AddRoundActivity extends AppCompatActivity {
         mTime.setText(formattedTime);
 
         mSelectedCorrdinators = curr.getCoordinators();
+        mCoordinatorView.removeAllViews();
+        mFaqView.removeAllViews();
+
 
         for(int i = 0; i < curr.getCoordinators().size(); i++){
             final Coordinator mCoordinator = curr.getCoordinators().get(i);
