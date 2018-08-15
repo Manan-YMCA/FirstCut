@@ -104,28 +104,10 @@ public class AddRoundActivity extends AppCompatActivity {
         setUpAutoCompleteTextView();
 
         roundNumber = getIntent().getLongExtra("roundNumber", 0);
-        if(roundNumber == 0) {
-            eventListeners();
-        } else {
-            setTitle("Round "+roundNumber);
-        }
+        setTitle("Round "+roundNumber);
         addDatabaseListeners();
     }
 
-    private void eventListeners() {
-        mRoundCount.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                roundNumber = (long) dataSnapshot.getValue()+1;
-                setTitle("Round "+roundNumber);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void initForEventUpload() {
         mAuth = FirebaseAuth.getInstance();

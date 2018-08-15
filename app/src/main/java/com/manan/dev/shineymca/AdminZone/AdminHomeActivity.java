@@ -85,7 +85,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         mRounds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AdminHomeActivity.this, AdminAllRoundsActivity.class));
+                startActivity(new Intent(AdminHomeActivity.this, AdminAllRoundsActivity.class).putExtra("clubName",clubName));
 //                startActivity(new Intent(AdminHomeActivity.this, AddRoundActivity.class));
             }
         });
