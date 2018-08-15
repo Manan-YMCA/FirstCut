@@ -1,6 +1,7 @@
 package com.manan.dev.shineymca.AdminZone;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,9 +56,25 @@ public class AddAttendeesActivity extends AppCompatActivity {
             final String userKey = scanResult.getContents();
             if(userKey != null ) {
                 Log.d("prerna", userKey);
-                databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).child("attendance").setValue("Present");
-                User user1 = new User(userKey, "Present");
-                databaseReference.child("Clubs").child(clubName).child("Attendees").push().setValue(user1);
+                databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.hasChild("attendance")) {
+                            Toast.makeText(AddAttendeesActivity.this, "Already marked", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).child("attendance").setValue("Present");
+                            User user1 = new User(userKey, "Present");
+                            databaseReference.child("Clubs").child(clubName).child("Attendees").push().setValue(user1);
+                            Toast.makeText(AddAttendeesActivity.this, "Attendance Marked", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
         }
