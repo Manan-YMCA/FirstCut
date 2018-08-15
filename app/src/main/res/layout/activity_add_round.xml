@@ -120,7 +120,7 @@
                 android:padding="4dp" />
 
             <LinearLayout
-                android:id="@+id/ll_coordinators"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -144,11 +144,19 @@
                     android:padding="4dp"
                     android:inputType="text" />
 
+                <LinearLayout
+                    android:id="@+id/ll_coordinators"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_faq"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -174,6 +182,13 @@
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/vector_add"/>
                 </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/ll_faq"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </LinearLayout>
 
             </LinearLayout>
 

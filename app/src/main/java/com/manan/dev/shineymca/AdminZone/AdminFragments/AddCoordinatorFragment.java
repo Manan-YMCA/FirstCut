@@ -2,6 +2,7 @@ package com.manan.dev.shineymca.AdminZone.AdminFragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
+import com.manan.dev.shineymca.AdminZone.AddCoordinator;
 import com.manan.dev.shineymca.Models.Coordinator;
 import com.manan.dev.shineymca.R;
 import com.manan.dev.shineymca.Utility.Methods;
@@ -29,6 +31,7 @@ public class AddCoordinatorFragment extends DialogFragment{
     Context mContext;
     EditText mCoordName, mCoordPhone;
     TextView mSubmit;
+    ProgressDialog dialog;
 
     @Override
     public void onAttach(Context context) {
@@ -45,10 +48,15 @@ public class AddCoordinatorFragment extends DialogFragment{
         mCoordPhone = (EditText) rootView.findViewById(R.id.et_coord_phone);
 
         mSubmit = (TextView) rootView.findViewById(R.id.tv_add);
+        dialog=new ProgressDialog(rootView.getContext());
+
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.setTitle("Loading");
+                dialog.setMessage("Sabr rakhe");
+                dialog.show();
                 if(checker()){
                     Coordinator mCoordinator = new Coordinator(mCoordName.getText().toString(), mCoordPhone.getText().toString());
                     FirebaseDatabase.getInstance().getReference().child("Coordinators").child(Methods.getEmailSharedPref(mContext))
@@ -56,7 +64,10 @@ public class AddCoordinatorFragment extends DialogFragment{
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+                                dialog.dismiss();
                                 getDialog().dismiss();
+
+                                Toast.makeText(mContext, "Coordinator added", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(mContext, "Unable to add Coordinator. Try again!", Toast.LENGTH_SHORT).show();
                             }
