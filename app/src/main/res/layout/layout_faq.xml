@@ -10,7 +10,7 @@
         android:layout_marginBottom="6dp"
         android:orientation="vertical"
         android:padding="8dp">
-
+      
         <EditText
             android:id="@+id/et_faq_question"
             android:layout_width="match_parent"
