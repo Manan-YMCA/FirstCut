@@ -104,28 +104,10 @@ public class AddRoundActivity extends AppCompatActivity {
         setUpAutoCompleteTextView();
 
         roundNumber = getIntent().getLongExtra("roundNumber", 0);
-        if(roundNumber == 0) {
-            eventListeners();
-        } else {
-            setTitle("Round "+roundNumber);
-        }
+        setTitle("Round "+roundNumber);
         addDatabaseListeners();
     }
 
-    private void eventListeners() {
-        mRoundCount.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                roundNumber = (long) dataSnapshot.getValue()+1;
-                setTitle("Round "+roundNumber);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void initForEventUpload() {
         mAuth = FirebaseAuth.getInstance();
@@ -390,15 +372,9 @@ public class AddRoundActivity extends AppCompatActivity {
         }
 
         for (int i = 0; i < mFaqQuestion.size(); i++) {
-            if ((mFaqQuestion.get(i).getText().toString().equals("") && !mFaqAnswer.get(i).getText().toString().equals("")) || (!mFaqQuestion.get(i).getText().toString().equals("") && mFaqAnswer.get(i).getText().toString().equals(""))) {
-                if (mFaqAnswer.get(i).getText().toString().equals("")) {
-                    mFaqAnswer.get(i).setError("Answer cannot be empty");
-                    return false;
-                }
-                if (mFaqQuestion.get(i).getText().toString().equals("")) {
-                    mFaqQuestion.get(i).setError("Question cannot be empty");
-                    return false;
-                }
+            if ((mFaqQuestion.get(i).getText().toString().equals("")  ||  mFaqAnswer.get(i).getText().toString().equals(""))) {
+
+                Toast.makeText(this, "faq cant empty", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -415,6 +391,8 @@ public class AddRoundActivity extends AppCompatActivity {
         @SuppressLint("InflateParams") LinearLayout view = (LinearLayout) LayoutInflater.from(AddRoundActivity.this).inflate(R.layout.layout_faq, null, false);
         EditText mQuestion = (EditText) view.findViewById(R.id.et_faq_question);
         EditText mAnswer = (EditText) view.findViewById(R.id.et_faq_answer);
+
+
 
         mFaqQuestion.add(mQuestion);
         mFaqAnswer.add(mAnswer);

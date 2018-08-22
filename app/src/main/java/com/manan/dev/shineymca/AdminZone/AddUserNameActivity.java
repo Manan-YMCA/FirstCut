@@ -41,12 +41,27 @@ public class AddUserNameActivity extends AppCompatActivity {
                 databaseReference.child("Usernames").child(userName).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String userKey = (String) dataSnapshot.getValue();
+                        final String userKey = (String) dataSnapshot.getValue();
                         Log.d("prerna",userKey);
-                        databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).child("attendance").setValue("Present");
-                        User user1 = new User(userKey, "Present");
-                        databaseReference.child("Clubs").child(clubName).child("Attendees").push().setValue(user1);
-                        Toast.makeText(AddUserNameActivity.this, "Details databsed", Toast.LENGTH_SHORT).show();
+                        databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                if (snapshot.hasChild("attendance")) {
+                                    Toast.makeText(AddUserNameActivity.this, "Already marked", Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    databaseReference.child("Users").child(userKey).child("Clubs").child(clubName).child("attendance").setValue("Present");
+                                    User user1 = new User(userKey, "Present");
+                                    databaseReference.child("Clubs").child(clubName).child("Attendees").push().setValue(user1);
+                                    Toast.makeText(AddUserNameActivity.this, "Attendance Marked", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                     @Override

@@ -60,6 +60,7 @@ public class AddCoordinatorFragment extends DialogFragment{
             public void onClick(View view) {
                 dialog.setTitle("Loading");
                 dialog.setMessage("Sabr rakhe");
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
                 if(checker()){
                     final Coordinator mCoordinator = new Coordinator(mCoordName.getText().toString(), mCoordPhone.getText().toString());
