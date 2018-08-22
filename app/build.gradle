@@ -2,9 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.manan.dev.shineymca"
-        minSdkVersion 21
+        minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

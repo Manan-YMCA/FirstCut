@@ -18,7 +18,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.manan.dev.shineymca.AdminZone.AddCoordinator;
 import com.manan.dev.shineymca.Models.Coordinator;
 import com.manan.dev.shineymca.R;
@@ -32,6 +35,7 @@ public class AddCoordinatorFragment extends DialogFragment{
     EditText mCoordName, mCoordPhone;
     TextView mSubmit;
     ProgressDialog dialog;
+    private int alreadyPresent;
 
     @Override
     public void onAttach(Context context) {
@@ -50,7 +54,7 @@ public class AddCoordinatorFragment extends DialogFragment{
         mSubmit = (TextView) rootView.findViewById(R.id.tv_add);
         dialog=new ProgressDialog(rootView.getContext());
 
-
+        alreadyPresent=0;
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,21 +62,46 @@ public class AddCoordinatorFragment extends DialogFragment{
                 dialog.setMessage("Sabr rakhe");
                 dialog.show();
                 if(checker()){
-                    Coordinator mCoordinator = new Coordinator(mCoordName.getText().toString(), mCoordPhone.getText().toString());
-                    FirebaseDatabase.getInstance().getReference().child("Coordinators").child(Methods.getEmailSharedPref(mContext))
-                            .push().setValue(mCoordinator).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    final Coordinator mCoordinator = new Coordinator(mCoordName.getText().toString(), mCoordPhone.getText().toString());
+                    FirebaseDatabase.getInstance().getReference().child("Coordinators").child(Methods.getEmailSharedPref(mContext)).addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                                Coordinator coordinator = postSnapshot.getValue(Coordinator.class);
+                                if(coordinator.getCoordPhone().equals(mCoordPhone.getText().toString())){
+                                alreadyPresent=1;
+                                break;
+                                }
+                            }
+                            if(alreadyPresent==1){
                                 dialog.dismiss();
                                 getDialog().dismiss();
+                                Toast.makeText(mContext, "Same number exists", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                FirebaseDatabase.getInstance().getReference().child("Coordinators").child(Methods.getEmailSharedPref(mContext))
+                                        .push().setValue(mCoordinator).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            dialog.dismiss();
+                                            getDialog().dismiss();
 
-                                Toast.makeText(mContext, "Coordinator added", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(mContext, "Unable to add Coordinator. Try again!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "Coordinator added", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(mContext, "Unable to add Coordinator. Try again!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             }
                         }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
                     });
+
                 }
             }
         });
