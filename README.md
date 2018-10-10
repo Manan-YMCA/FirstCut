@@ -35,6 +35,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 * [Naman Sachdeva](https://github.com/namansachdeva)
 * [Aashif Khan](https://github.com/aashifkhanate)
+* [Rishabh](http://github.com/)
 * [Shubham Kachroo](https://github.com/the-Alchemister)
 * [Jayati](https://github.com/jayati2016)
 * [Neha Yadav](https://github.com/nehayadav113)
